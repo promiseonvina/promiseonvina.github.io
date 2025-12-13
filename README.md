@@ -1,2 +1,2 @@
-# promiseonvn..github.io
+# promiseonvn.github.io
 promiseon korea menu
