@@ -323,10 +323,10 @@
               <div class="col-12">
                 <div class="input-group">
                   <input type="text" class="form-control" id="start_date" autocomplete="off">
-                  <button type="button" class="btn btn-secondary d-none d-sm-block" id="bt_date_subtract">
+                  <button type="button" class="btn btn-secondary" id="bt_date_subtract">
                     <i class="bi bi-caret-left"></i>
                   </button>
-                  <button type="button" class="btn btn-secondary d-none d-sm-block" id="bt_date_add">
+                  <button type="button" class="btn btn-secondary" id="bt_date_add">
                     <i class="bi bi-caret-right"></i>
                   </button>
                   <button class="btn btn-primary" id="bt_search" type="button">
@@ -341,11 +341,16 @@
           <div class="col col-12 col-lg-3 col-md-6 text-center">
             <div class="row">
               <div class="tabs" role="tablist" aria-label="메뉴 카테고리">
-                <button type="button" class="tab-btn active js-category" data-id="bt_all" data-category="0">전체</button>
-                <button type="button" class="tab-btn js-category" data-id="bt_sang" data-category="2">조식</button>
-                <button type="button" class="tab-btn js-category" data-id="bt_trua" data-category="3">중식</button>
-                <button type="button" class="tab-btn js-category" data-id="bt_chieu" data-category="4">석식</button>
-                <button type="button" class="tab-btn js-category" data-id="bt_dem" data-category="5">야식</button>
+                <button type="button" class="tab-btn active js-category" data-id="bt_all" data-category="0"
+                  id="tab_all">%TXT_ALL%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_sang" data-category="2"
+                  id="tab_sang">%TXT_BREAKFAST%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_trua" data-category="3"
+                  id="tab_trua">%TXT_LUNCH%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_chieu" data-category="4"
+                  id="tab_chieu">%TXT_DINNER%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_dem" data-category="5"
+                  id="tab_dem">%TXT_NIGHT%</button>
               </div>
             </div>
           </div>
@@ -436,7 +441,8 @@
             <div class="card-body meal-card__body">
               <!-- 대표 메뉴 (한 줄 강조) -->
               <div class="meal-card__section">
-                <div class="meal-card__section-title">메인 메뉴</div>
+                <div class="meal-card__section-title">%TITLE_MAIN%</div>
+
                 <div class="meal-card__primary">
                   %NAME_K_3%
                 </div>
@@ -444,7 +450,7 @@
 
               <!-- 일반 메뉴 -->
               <div class="meal-card__section mt-3">
-                <div class="meal-card__section-title">메뉴</div>
+                <div class="meal-card__section-title">%TITLE_MENU%</div>
                 <ul class="meal-list">
                   %MENU_LIST%
                 </ul>
@@ -517,6 +523,29 @@
       return params.get(key);
     }
 
+    const I18N = {
+      kr: {
+        TITLE_MAIN: '메인 메뉴',
+        TITLE_MENU: '메뉴',
+        ALL: '전체',
+        BREAKFAST: '조식',
+        LUNCH: '중식',
+        DINNER: '석식',
+        NIGHT: '야식',
+        NO_MENU: '등록된 메뉴가 없습니다.'
+      },
+      vn: {
+        TITLE_MAIN: 'Món chính',
+        TITLE_MENU: 'Thực đơn',
+        ALL: 'Tất cả',
+        BREAKFAST: 'sáng',
+        LUNCH: 'trưa',
+        DINNER: 'tối',
+        NIGHT: 'đêm',
+        NO_MENU: 'Không có món ăn'
+      }
+    };
+
     // --------------------------------------------------------------------
     // 초기화
     // --------------------------------------------------------------------
@@ -536,11 +565,37 @@
 
       // 현위치 버튼 초기화
       initializeGeolocationButton();
+
+      // 언어 초기화
+      initializeLang();
+
+      I18N[formState.lang].MAIN;
+
+      applyI18N();
     });
 
     // --------------------------------------------------------------------
     // DataRange 설정 (초기 날짜 설정)
     // --------------------------------------------------------------------
+
+    function initializeLang() {
+      const urlLang = getQueryParam('lang');
+      if (urlLang && (urlLang === 'kr' || urlLang === 'vn')) {
+        formState.lang = urlLang;
+      }
+    }
+
+    function applyI18N() {
+      $('#tab_all').text(I18N[formState.lang].ALL);
+      $('#tab_sang').text(I18N[formState.lang].BREAKFAST);
+      $('#tab_trua').text(I18N[formState.lang].LUNCH);
+      $('#tab_chieu').text(I18N[formState.lang].DINNER);
+      $('#tab_dem').text(I18N[formState.lang].NIGHT);
+      $('#title_main').text(I18N[formState.lang].TITLE_MAIN);
+      $('#title_menu').text(I18N[formState.lang].TITLE_MENU);
+
+
+    }
 
     // --------------------------------------------------------------------
     // Toast 설정
@@ -915,16 +970,20 @@
 
       $.each(data, function (i, row) {
         // 1) 메인 메뉴 (대표 1개)
-        var mainMenu = (row.menu_name_k_3 || '').trim();
+        var mainMenu = (
+          formState.lang === 'vn'
+            ? row.menu_name_v_3
+            : row.menu_name_k_3
+        ) || '';
 
         // 2) 일반 메뉴 (빈 값 제거)
         var menus = [
-          row.menu_name_k_1,
-          row.menu_name_k_2,
-          row.menu_name_k_4,
-          row.menu_name_k_5,
-          row.menu_name_k_6,
-          row.menu_name_k_7
+          formState.lang === 'vn' ? row.menu_name_v_1 : row.menu_name_k_1,
+          formState.lang === 'vn' ? row.menu_name_v_2 : row.menu_name_k_2,
+          formState.lang === 'vn' ? row.menu_name_v_4 : row.menu_name_k_4,
+          formState.lang === 'vn' ? row.menu_name_v_5 : row.menu_name_k_5,
+          formState.lang === 'vn' ? row.menu_name_v_6 : row.menu_name_k_6,
+          formState.lang === 'vn' ? row.menu_name_v_7 : row.menu_name_k_7
         ].map(function (v) { return (v || '').trim(); })
           .filter(function (v) { return v.length > 0; });
 
@@ -939,16 +998,24 @@
 
         // 3) 카드 렌더링
         view += template
+          .replace('%TITLE_MAIN%', I18N[formState.lang].TITLE_MAIN)
+          .replace('%TITLE_MENU%', I18N[formState.lang].TITLE_MENU)
+          .replace('%TXT_MAIN_MENU%', I18N[formState.lang].MAIN)
           .replace('%ROWINFO%', row.amk_seq || '')
           .replace('%IMG%', 'assets/img/20251215.png')
           .replace('%SEQ%', row.amk_seq || '')
           .replace('%WORKPLACE%', row.workplace_name || '')
           .replace('%CATEGORY%', '  ' + (row.category || ''))
           .replace('%APPLYDATE%', '  ' + (row.apply_date || ''))
-          .replace('%NAME_K_3%', mainMenu || '(메인 메뉴 미등록)')
+          .replace('%NAME_K_3%', mainMenu)
           .replace('%MENU_LIST%', menuLis)
-          .replace('%CATEGORY_K%', ' ' + (row.category_name_k || ''))
-          .replace('%CATEGORY_V%', ' ' + (row.category_name_v || ''));
+          //.replace('%CATEGORY_K%', ' ' + (row.category_name_k || ''))
+          .replace('%CATEGORY_V%', ' ' + (row.category_name_v || ''))
+          .replace('%CATEGORY_K%',
+            formState.lang === 'vn'
+              ? row.category_name_v
+              : row.category_name_k
+          );
       });
 
       return '<div class="row mx-0">' + view + '</div>';
