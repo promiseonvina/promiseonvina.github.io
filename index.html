@@ -275,6 +275,17 @@
       font-weight: 400;
       color: var(--muted);
     }
+
+    #footer-fixed {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      padding: 8px 0;
+      z-index: 100;
+    }
   </style>
 
 </head>
@@ -409,11 +420,22 @@
       <!-- 카드 출력 컨테이너 -->
       <div class="row" id="menu-card-container"></div>
 
-      <hr class="mb-0">
-      <div>
-        <p class="text-center text-muted small mb-3 mt-2">
-          Promiseon vietnam co,. ltd
+
+      <!-- Empty state -->
+      <div class="row" id="menu-empty-state" style="display:none;">
+        <div class="col-12">
+          <div class="meal-card p-4 text-center">
+            <div class="mt-3 mb-3"><img src="assets/svg/illustrations/oc-error.svg" alt="No Data" style="width: 150px;">
+            </div>
+
+            <div class="meal-card__section-title" id="empty_title"></div>
+            <div class="text-muted mt-2 mb-5" id="empty_desc"></div>
+          </div>
+        </div>
       </div>
+
+
+
 
 
       <!-- 카드 템플릿 -->
@@ -479,7 +501,19 @@
 
   </div>
 
+
+  <!-- Footer -->
+
+  <div class="mt-2 ms-2 text-center">
+    <img src="assets/svg/logos/logo.png" alt="Logo" class="center" style="height: 30px; width: auto;">
+    <!-- <span class="small text-muted">© 2024 Promiseon. All rights reserved.</span> -->
+  </div>
+
+
+
+  </div>
   </main>
+
 
   <!-----------------------------------------[ Script ]----------------------------------------->
   <script src="assets/vendor/jquery/dist/jquery.min.js"></script>
@@ -651,7 +685,7 @@
       Swal.fire({
         title: title || '알림',
         text: text || '',
-        imageUrl: "assets/svg/illustrations/oc-error.svg",
+        //imageUrl: "assets/svg/illustrations/oc-error.svg",
         imageWidth: 400,
         imageHeight: 200,
         imageAlt: "Custom image"
@@ -926,10 +960,19 @@
       }
 
       if (rows.length === 0) {
-        //alert_toast("검색한 내용이 없습니다.");
-        alert_swal('선택한 날짜에 등록된 식단이 없습니다.', '다른 날짜를 선택하거나 전체 식사를 확인해 주세요', 'error');
+        // 팝업 대신 화면 안내
+        $('#empty_title').text(I18N[formState.lang].EMPTY_TITLE || '조회 결과 없음');
+        $('#empty_desc').text(I18N[formState.lang].EMPTY_DESC || '선택한 조건에 해당하는 식단이 없습니다.');
+        showEmptyState(true);
+      } else {
+        showEmptyState(false);
       }
     });
+
+    function showEmptyState(show) {
+      $('#menu-empty-state').toggle(!!show);
+      $('#menu-card-container').toggle(!show);
+    }
 
     // --------------------------------------------------------------------
     // rowStyle (행 스타일 없으면 빈 객체 반환)
