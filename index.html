@@ -3,17 +3,7 @@
 
 <head>
   <!-----------------------------------------[ Head Section ]----------------------------------------->
-  <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-554MTJCT');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Google tag (gtag.js) -->
+  <!-- Google Analytics GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYSE9D9KBE"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -34,10 +24,9 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="robots" content="noindex, nofollow">
   <!-----------------------------------------[ CSS Implementing Plugins ]----------------------------------------->
-  <link href="assets/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="assets/vendor/bootstrap/dist/css/bootstrap.min.css">
-  <link href="assets/vendor/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet" />
+  <link href="assets/vendor/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="assets/vendor/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
 
   <!-- Google Fonts -->
@@ -49,10 +38,9 @@
 
 
   <style>
-    /* ===== Design Tokens ===== */
     :root {
       --bg: #F9FAFB;
-      --card: #FFFFFF;
+      --card: #fff;
       --border: #E5E7EB;
       --text: #111827;
       --muted: #6B7280;
@@ -60,31 +48,22 @@
       --danger: #DC2626;
     }
 
-    /* ===== Base ===== */
     body {
-      opacity: 1;
       font-family: "Noto Sans KR", sans-serif;
-      font-optical-sizing: auto;
-      font-weight: 400;
-      font-style: normal;
       background: var(--bg);
-      color: var(--text);
+      color: var(--text)
     }
 
     .fixed-table-toolbar {
-      display: none !important;
-      height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
+      display: none !important
     }
 
-    /* ===== Header / Toolbar / Tabs ===== */
     .header-sticky {
       position: sticky;
       top: 0;
       z-index: 50;
       background: #fff;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border)
     }
 
     .toolbar {
@@ -92,229 +71,88 @@
       gap: 12px;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 16px;
+      padding: 10px 16px
     }
 
+    /* Tabs */
     .tabs {
       display: flex;
-      gap: 8px;
-      padding: 0 16px 10px 16px;
+      gap: 8px
     }
 
-    .tabs .tab {
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 14px;
-    }
-
-    .tabs .tab.active {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: #EFF6FF;
-      font-weight: 600;
-    }
-
-    /* ===== Grid ===== */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 14px;
-      padding: 16px;
-    }
-
-    /* ===== Meal Cards ===== */
-    .meal-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      overflow: hidden;
-    }
-
-    .meal-card__header {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .card-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .badge.meal {
-      background: #EFF6FF;
-      color: var(--primary);
-    }
-
-    .meal-card__body {
-      padding: 12px 14px;
-    }
-
-    /* ===== Menu ===== */
-    .menu-main {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .menu-main::before {
-      content: "";
-      width: 4px;
-      border-radius: 999px;
-      background: var(--danger);
-      display: block;
-      margin-top: 2px;
-    }
-
-    .menu-main .name {
-      color: var(--danger);
-      font-weight: 800;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    .menu-list {
-      margin: 0;
-      padding-left: 16px;
-    }
-
-    .menu-list li {
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 3px 0;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    /* ===== Footer (optional) ===== */
-    .meal-card__footer {
-      padding: 10px 14px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-
-    /* ===== Tabs (refined) ===== */
     .tabs .tab-btn {
       border: 1px solid var(--border);
       background: #fff;
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 14px;
-      line-height: 1;
-      color: var(--text) !important;
-      /* bootstrap .btn-* 클래스가 붙어도 글자가 사라지지 않게 */
+      color: var(--text) !important
     }
 
     .tabs .tab-btn.active {
       border-color: var(--primary);
       color: var(--primary) !important;
       background: #EFF6FF;
-      font-weight: 700;
+      font-weight: 700
     }
 
-    /* ===== Meal Card (refined) ===== */
+    /* Card */
+    .meal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04)
+    }
+
     .meal-card__header {
       background: #fff;
       border-bottom: 1px solid var(--border);
-      padding: 12px 14px;
+      padding: 12px 14px
     }
 
     .meal-card__workplace {
       font-size: 16px;
-      font-weight: 800;
-      color: var(--text);
+      font-weight: 800
     }
 
     .meal-card__meta {
       display: flex;
       gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 6px;
+      flex-wrap: wrap
     }
 
     .meal-chip {
-      display: inline-flex;
-      align-items: center;
       padding: 4px 8px;
       border-radius: 999px;
       font-size: 12px;
       border: 1px solid var(--border);
-      color: var(--muted);
-      background: #F9FAFB;
+      background: #F9FAFB
     }
 
     .meal-card__section-title {
       font-size: 12px;
-      color: var(--muted);
       font-weight: 700;
-      margin-bottom: 6px;
+      color: var(--muted);
+      margin-bottom: 6px
     }
 
     .meal-card__primary {
       font-size: 15px;
       font-weight: 800;
       color: var(--danger);
-      line-height: 1.4;
-      padding-left: 10px;
       border-left: 4px solid var(--danger);
-    }
-
-    .meal-list {
-      margin: 0;
-      padding-left: 18px;
+      padding-left: 10px
     }
 
     .meal-item {
       font-size: 14px;
-      line-height: 1.7;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .meal-subitem {
-      font-size: 13px;
-      line-height: 1.7;
-      font-weight: 400;
-      color: var(--muted);
-    }
-
-    #footer-fixed {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      border-top: 1px solid #e5e7eb;
-      padding: 8px 0;
-      z-index: 100;
+      line-height: 1.7
     }
   </style>
 
 </head>
 
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-554MTJCT" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
 
   <!-----------------------------------------[ HEADER ]----------------------------------------->
   <div class="header-sticky">
@@ -374,7 +212,7 @@
           </div>
 
           <!-- 카테고리 버튼 -->
-          <div class="col col-12 col-lg-3 col-md-6 text-center">
+          <div class="col col-12 col-lg-4 col-md-4 me-0 text-center">
             <div class="row">
               <div class="tabs" role="tablist" aria-label="메뉴 카테고리">
                 <button type="button" class="tab-btn active js-category" data-id="bt_all" data-category="0"
@@ -387,20 +225,31 @@
                   id="tab_chieu">%TXT_DINNER%</button>
                 <button type="button" class="tab-btn js-category" data-id="bt_dem" data-category="5"
                   id="tab_dem">%TXT_NIGHT%</button>
+
+                <button class="btn btn-primary" id="bt_week_download">
+                  <i class="bi bi-download"></i>
+
+                </button>
               </div>
+
+
             </div>
+
           </div>
 
+          <!-- 주간 메뉴 다운로드 -->
+
+
           <!-- 현위치 버튼 -->
-          <div class="col col-12 col-lg-7 col-md-4 text-start">
-            <!--<<div class="col-12 col-lg-2">
+          <!--<div class="col col-12 col-lg-7 col-md-4 text-start">
+            <div class="col-12 col-lg-2">
             button class="btn btn-outline-primary w-100" id="bt_use_location" type="button"
               data-loading-text="위치 확인 중...">
               <i class="bi bi-geo-alt"></i>
               <span class="ms-1">현위치</span>
             </button>
-          </div>-->
           </div>
+          </div>-->
 
 
         </div>
@@ -551,10 +400,8 @@
   <script src="assets/vendor/jquery/dist/jquery.min.js"></script>
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/moment/min/moment.min.js"></script>
-  <script src="assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
   <script src="assets/vendor/bootstrap-table/dist/bootstrap-table.min.js"></script>
   <script src="assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-  <script src="assets/vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
   <script src="assets/vendor/bootstrap-table/dist/extensions/custom-view/bootstrap-table-custom-view.min.js"></script>
 
   <script>
@@ -598,7 +445,8 @@
         LUNCH: '중식',
         DINNER: '석식',
         NIGHT: '야식',
-        NO_MENU: '등록된 메뉴가 없습니다.'
+        NO_MENU: '등록된 메뉴가 없습니다.',
+        TXT_DOWNLOAD: ' 주간 메뉴 다운로드'
       },
       vn: {
         TITLE_MAIN: 'Món chính',
@@ -608,7 +456,8 @@
         LUNCH: 'trưa',
         DINNER: 'tối',
         NIGHT: 'đêm',
-        NO_MENU: 'Không có món ăn'
+        NO_MENU: 'Không có món ăn',
+        TXT_DOWNLOAD: ' Tải xuống thực đơn hàng tuần'
       }
     };
 
@@ -659,8 +508,7 @@
       $('#tab_dem').text(I18N[formState.lang].NIGHT);
       $('#title_main').text(I18N[formState.lang].TITLE_MAIN);
       $('#title_menu').text(I18N[formState.lang].TITLE_MENU);
-
-
+      $('#bt_week_download_text').text(I18N[formState.lang].TXT_DOWNLOAD);
     }
 
     // --------------------------------------------------------------------
@@ -707,21 +555,6 @@
       setTimeout(() => {
         newToast.remove();
       }, 2000);
-    }
-
-    // --------------------------------------------------------------------
-    // Sweet Alert 설정 
-    // --------------------------------------------------------------------
-
-    function alert_swal(title, text, icon) {
-      Swal.fire({
-        title: title || '알림',
-        text: text || '',
-        //imageUrl: "assets/svg/illustrations/oc-error.svg",
-        imageWidth: 400,
-        imageHeight: 200,
-        imageAlt: "Custom image"
-      });
     }
 
     // --------------------------------------------------------------------
@@ -811,8 +644,8 @@
       if ($button.length === 0) return;
 
       if (!navigator.geolocation) {
-        //alert_toast && alert_toast('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
-        alert_swal('오류', '이 브라우저에서는 위치 정보를 사용할 수 없습니다.', 'error');
+        alert_toast && alert_toast('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
+        //alert_swal('오류', '이 브라우저에서는 위치 정보를 사용할 수 없습니다.', 'error');
         return;
       }
 
@@ -849,8 +682,8 @@
       const coords = position && position.coords;
       if (!coords) {
         setGeoButtonLoading(false);
-        //alert_toast && alert_toast('위치 정보를 불러오지 못했습니다. 다시 시도해주세요.');
-        alert_swal('오류', '위치 정보를 불러오지 못했습니다. 다시 시도해주세요.', 'error');
+        alert_toast && alert_toast('위치 정보를 불러오지 못했습니다. 다시 시도해주세요.');
+        //alert_swal('오류', '위치 정보를 불러오지 못했습니다. 다시 시도해주세요.', 'error');
         return;
       }
       fetchNearestSite(coords.latitude, coords.longitude);
@@ -858,7 +691,7 @@
 
     function handleGeolocationError(error) {
       setGeoButtonLoading(false);
-      //alert_toast && alert_toast(describeGeolocationError(error));
+      alert_toast && alert_toast(describeGeolocationError(error));
     }
 
     function describeGeolocationError(error) {
@@ -887,7 +720,7 @@
 
           if (!response || response.success === false || !response.data) {
             const message = (response && response.message) || '가까운 사업장을 찾지 못했습니다.';
-            //alert_toast && alert_toast(message);
+            alert_toast && alert_toast(message);
             return;
           }
 
@@ -896,7 +729,7 @@
         error: function (xhr) {
           setGeoButtonLoading(false);
           const message = (xhr && xhr.responseJSON && xhr.responseJSON.message) || '사업장 정보를 불러오는데 실패했습니다.';
-          //alert_toast && alert_toast(message);
+          alert_toast && alert_toast(message);
         }
       });
     }
@@ -904,7 +737,7 @@
     // select 없이 formState만 갱신해서 사용
     function applyNearestSiteSelection(siteData, message) {
       if (!siteData || !siteData.id) {
-        //alert_toast && alert_toast('선택할 사업장 정보가 없습니다.');
+        alert_toast && alert_toast('선택할 사업장 정보가 없습니다.');
         return;
       }
 
@@ -917,7 +750,7 @@
       $('#tb_menu_korean').bootstrapTable('refresh');
 
       const toastMessage = message || siteLabel + ' 사업장으로 이동했습니다.';
-      //alert_toast && alert_toast(toastMessage);
+      alert_toast && alert_toast(toastMessage);
     }
 
     // --------------------------------------------------------------------
@@ -1116,6 +949,41 @@
 
       $('#tb_menu_korean').bootstrapTable('refresh');
     });
+
+
+    // --------------------------------------------------------------------
+    // 주간 메뉴 다운로드 
+    // --------------------------------------------------------------------
+    $('#bt_week_download').on('click', function () {
+      const date = $('#start_date').val();
+      const fileName = getWeeklyMenuFileName(date);
+      const url = `/weekly_menu/${fileName}`;
+      //window.open(url, '_blank');
+      console.log('다운로드 시도:', url);
+      downloadWeeklyMenu(fileName);
+
+    });
+
+    function getWeeklyMenuFileName(dateStr) {
+      const m = moment(dateStr, 'YYYY-MM-DD');
+      const year = m.isoWeekYear();
+      const week = String(m.isoWeek()).padStart(2, '0');
+      return `weekly_menu_${year}_${week}.pdf`;
+    }
+
+    function downloadWeeklyMenu(fileName) {
+      alert_toast('해당 주간 메뉴 파일이 등록되지 않았습니다.');
+
+      fetch('https://pvbi.ddns.net/api/korean-menu/weekly_menu/' + fileName, { method: 'HEAD' }).then(res => {
+        if (res.ok) {
+          //window.open('/weekly_menu/' + fileName, '_blank');
+        } else {
+          alert_toast('해당 주간 메뉴 파일이 등록되지 않았습니다.');
+        }
+      });
+    }
+
+
   </script>
 </body>
 
