@@ -228,7 +228,6 @@
 
                 <button class="btn btn-primary" id="bt_week_download">
                   <i class="bi bi-download"></i>
-
                 </button>
               </div>
 
@@ -388,7 +387,25 @@
 
 
   <!-- Footer -->
-
+  <!-----------------------------------------[ Modal ]----------------------------------------->
+  <div class="modal" id="modal-show-img" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="card" id="print-request">
+            <div class="card card-lg mb-0">
+              <div class="row">
+                <img src="" id="ms_img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -952,36 +969,32 @@
 
 
     // --------------------------------------------------------------------
-    // 주간 메뉴 다운로드 
+    // 주간 메뉴 뷰어
     // --------------------------------------------------------------------
     $('#bt_week_download').on('click', function () {
       const date = $('#start_date').val();
-      const fileName = getWeeklyMenuFileName(date);
-      const url = `/weekly_menu/${fileName}`;
-      //window.open(url, '_blank');
-      console.log('다운로드 시도:', url);
-      downloadWeeklyMenu(fileName);
+      const m = moment(date, 'YYYY-MM-DD');
+      const year = m.isoWeekYear();
+      const week = String(m.isoWeek()).padStart(2, '');
+      const siteId = formState.searchSite;
+      const url = `${year}/${siteId}/${week}/menu.jpg`;
+      const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${siteId}/${week}`;
+
+      $.get(checkUrl, function (res) {
+
+        if (!res.success) {
+          alert_toast('등록된 주간 식단이 없습니다.');
+          return;
+        }
+
+        const imageUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${siteId}/${week}?t=${Date.now()}`;
+
+        $("#modal-show-img").modal('show');
+        $('#ms_img').attr("src", imageUrl);
+      });
 
     });
 
-    function getWeeklyMenuFileName(dateStr) {
-      const m = moment(dateStr, 'YYYY-MM-DD');
-      const year = m.isoWeekYear();
-      const week = String(m.isoWeek()).padStart(2, '0');
-      return `weekly_menu_${year}_${week}.pdf`;
-    }
-
-    function downloadWeeklyMenu(fileName) {
-      alert_toast('해당 주간 메뉴 파일이 등록되지 않았습니다.');
-
-      fetch('https://pvbi.ddns.net/api/korean-menu/weekly_menu/' + fileName, { method: 'HEAD' }).then(res => {
-        if (res.ok) {
-          //window.open('/weekly_menu/' + fileName, '_blank');
-        } else {
-          alert_toast('해당 주간 메뉴 파일이 등록되지 않았습니다.');
-        }
-      });
-    }
 
 
   </script>
