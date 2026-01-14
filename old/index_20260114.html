@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <!-----------------------------------------[ Head Section ]----------------------------------------->
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYSE9D9KBE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-SYSE9D9KBE');
+  </script>
+
+  <!-----------------------------------------[ Required Meta Tags Always Come First ]----------------------------------------->
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no">
+  <title>Promiseon Korean Menu</title>
+  <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex, nofollow">
+  <!-----------------------------------------[ CSS Implementing Plugins ]----------------------------------------->
+  <link rel="stylesheet" href="assets/vendor/bootstrap/dist/css/bootstrap.min.css">
+  <link href="assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet" />
+  <link href="assets/vendor/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="assets/vendor/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <!-----------------------------------------[ CSS Front Template ]----------------------------------------->
+
+
+
+  <style>
+    :root {
+      --bg: #F9FAFB;
+      --card: #fff;
+      --border: #E5E7EB;
+      --text: #111827;
+      --muted: #6B7280;
+      --primary: #2563EB;
+      --danger: #DC2626;
+    }
+
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--text)
+    }
+
+    .fixed-table-toolbar {
+      display: none !important
+    }
+
+    .header-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #fff;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px
+    }
+
+    .tabs .tab-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: var(--text) !important
+    }
+
+    .tabs .tab-btn.active {
+      border-color: var(--primary);
+      color: var(--primary) !important;
+      background: #EFF6FF;
+      font-weight: 700
+    }
+
+    /* Card */
+    .meal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04)
+    }
+
+    .meal-card__header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px
+    }
+
+    .meal-card__workplace {
+      font-size: 16px;
+      font-weight: 800
+    }
+
+    .meal-card__meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .meal-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: #F9FAFB
+    }
+
+    .meal-card__section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px
+    }
+
+    .meal-card__primary {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+      padding-left: 10px
+    }
+
+    .meal-item {
+      font-size: 14px;
+      line-height: 1.7
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-----------------------------------------[ HEADER ]----------------------------------------->
+  <div class="header-sticky">
+    <header id="header" class="navbar navbar-expand-lg navbar-bordered bg-white m-2">
+      <div class="container-fluid">
+        <img class="mb-1" src="assets/svg/logos/main_logo.png" alt="Logo" style="height: 100px;">
+        <!--<p class="navbar-text ms-2 mb-0 text-black h3">오늘의 한식 식단</p> -->
+      </div>
+    </header>
+    <!-----------------------------------------[ Toast Start ]----------------------------------------->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+      <div id="liveToast" class="toast border border-primary" role="alert" aria-live="assertive" aria-atomic="true"
+        data-bs-delay="3000">
+        <div class="toast-header">
+          <strong class="me-auto text-black">Message</strong>
+          <small>Just now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          <p class="text-black" id="toast_contents"></p>
+        </div>
+      </div>
+    </div>
+    <!-----------------------------------------[ Main ]----------------------------------------->
+    <main id="content" role="main" class="main">
+      <div class="content container-fluid">
+
+        <div class="align-items-center">
+          <div class="col mb-0">
+            <nav aria-label="breadcrumb">
+              <div>
+                <!-- breadcrumb 자리 -->
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <div class="toolbar row p-0 mt-0 mb-0 d-flex align-items-left justify-content-start">
+          <!-- 날짜 + 검색 (site select 제거 후 전체 폭 사용) -->
+          <div class="col col-12 col-lg-3 col-md-6">
+            <div class="row g-0">
+              <div class="col-12">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="start_date" autocomplete="off">
+                  <button type="button" class="btn btn-secondary" id="bt_date_subtract">
+                    <i class="bi bi-caret-left"></i>
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="bt_date_add">
+                    <i class="bi bi-caret-right"></i>
+                  </button>
+                  <button class="btn btn-primary" id="bt_search" type="button">
+                    <i class="bi bi-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카테고리 버튼 -->
+          <div class="col col-12 col-x1-4 col-lg-6 col-md-6 me-0 text-center">
+            <div class="row">
+              <div class="tabs" role="tablist" aria-label="메뉴 카테고리">
+                <button type="button" class="tab-btn active js-category" data-id="bt_all" data-category="0"
+                  id="tab_all">%TXT_ALL%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_sang" data-category="2"
+                  id="tab_sang">%TXT_BREAKFAST%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_trua" data-category="3"
+                  id="tab_trua">%TXT_LUNCH%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_chieu" data-category="4"
+                  id="tab_chieu">%TXT_DINNER%</button>
+                <button type="button" class="tab-btn js-category" data-id="bt_dem" data-category="5"
+                  id="tab_dem">%TXT_NIGHT%</button>
+
+              </div>
+            </div>
+          </div>
+
+
+          <!-- 주간 메뉴 다운로드 -->
+          <!--<button class="btn btn-primary" id="bt_week_download">
+            <i class="bi bi-download"></i>
+          </button> -->
+
+          <!-- 현위치 버튼 -->
+          <!--<div class="col col-12 col-lg-7 col-md-4 text-start">
+            <div class="col-12 col-lg-2">
+            button class="btn btn-outline-primary w-100" id="bt_use_location" type="button"
+              data-loading-text="위치 확인 중...">
+              <i class="bi bi-geo-alt"></i>
+              <span class="ms-1">현위치</span>
+            </button>
+          </div>
+          </div>-->
+
+
+        </div>
+      </div>
+
+      <!-- 테이블 -->
+      <div class="mb-1 ps-0">
+        <table class="table table-sm table-striped table-responsive text-wrap small" id="tb_menu_korean"
+          data-buttons-prefix="btn-sm btn" data-show-export="false" data-buttons-align="left" data-search-align="left"
+          data-toggle="table" data-sort-class="table-active" data-sortable="false" data-search="false"
+          data-pagination="false" data-select-item-name="selectItemName" data-buttons-class="primary"
+          data-click-to-select="false" data-show-refresh="false" data-auto-refresh="false" data-show-columns="false"
+          data-show-fullscreen="false" data-show-footer="false" data-toolbar="#get" data-method="GET"
+          data-virtual-scroll="false" data-query-params="queryParams_koreanMenu" data-page-size="24"
+          data-response-handler="responseHandler" data-url="https://pvbi.ddns.net/api/korean-menu"
+          data-show-custom-view="false" data-custom-view="customViewFormatter" data-show-custom-view-button="false"
+          data-custom-view-default-view="true" data-page-list="[10, 25, 50, 100, 200, All]"
+          data-ajax-options='{"headers":{"X-API-KEY":"l0vLjDuIxAAUjHd7"}}'>
+          <thead>
+            <tr>
+              <th data-sortable="true" data-field="amk_seq" data-visible="false" data-switchable="true"
+                data-align="center"></th>
+              <th data-sortable="true" data-field="site_url" data-visible="false" data-switchable="true"
+                data-align="center"></th>
+              <th data-sortable="true" data-field="workplace" data-visible="false" data-switchable="true"
+                data-align="center"></th>
+              <th data-sortable="true" data-field="category" data-visible="false" data-switchable="true"
+                data-align="center"></th>
+              <th data-sortable="true" data-field="workplace_name" data-visible="true" data-switchable="true"
+                data-align="center"></th>
+              <th data-sortable="true" data-field="apply_date" data-visible="true" data-switchable="true"
+                data-align="center">DATE</th>
+              <th data-sortable="true" data-field="category_name_k" data-visible="true" data-switchable="true"
+                data-align="center">구분</th>
+              <th data-sortable="true" data-field="category_name_v" data-visible="true" data-switchable="true"
+                data-align="center">PHAN LOAI</th>
+              <th data-sortable="true" data-field="menu_name_k" data-visible="true" data-switchable="true"
+                data-align="left">메뉴</th>
+              <th data-sortable="true" data-field="menu_name_v" data-visible="true" data-switchable="true"
+                data-align="left">THUC DON</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+
+      <!-- 카드 출력 컨테이너 -->
+      <div class="row" id="menu-card-container"></div>
+
+
+      <!-- Empty state -->
+      <div class="row" id="menu-empty-state" style="display:none;">
+        <div class="col-12">
+          <div class="meal-card p-4 text-center">
+            <div class="mt-3 mb-3"><img src="assets/svg/illustrations/oc-error.svg" alt="No Data" style="width: 150px;">
+            </div>
+            <div class="meal-card__section-title" id="empty_title"></div>
+            <div class="text-muted mt-2 mb-5" id="empty_desc"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 카드 템플릿 -->
+      <!-- 카드 템플릿 -->
+      <template id="profileTemplate">
+        <div class="col-12 col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-3 g-2">
+          <div class="card meal-card h-100 shadow-sm" data-rowInfo="%ROWINFO%">
+
+            <!-- 헤더: 사업장 / 날짜 / 식사구분 / 상태뱃지 -->
+            <div class="card-header meal-card__header">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="min-w-0">
+                  <div class="meal-card__workplace text-truncate"><b>%WORKPLACE%</b></div>
+                  <div class="meal-card__meta">
+                    <span class="meal-chip">%APPLYDATE%</span>
+                    <span class="meal-chip">%CATEGORY_K%</span>
+                    <button class="btn btn-outline-primary btn-sm ms-1 js-week-download" data-site="%SITE_ID%"
+                      data-date="%APPLYDATE_RAW%">
+                      <i class="bi bi-download"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 상태/구분 뱃지 (필요시 값 주입) -->
+                <!-- <span class="badge bg-primary rounded-pill meal-card__badge">%BADGE%</span> -->
+              </div>
+            </div>
+
+            <div class="card-body meal-card__body">
+              <!-- 대표 메뉴 (한 줄 강조) -->
+              <div class="meal-card__section">
+                <div class="meal-card__section-title">%TITLE_MAIN%</div>
+
+                <div class="meal-card__primary">
+                  %NAME_K_3%
+                </div>
+              </div>
+
+              <!-- 일반 메뉴 -->
+              <div class="meal-card__section mt-3">
+                <div class="meal-card__section-title">%TITLE_MENU%</div>
+                <ul class="meal-list">
+                  %MENU_LIST%
+                </ul>
+              </div>
+
+              <!-- 후식/부가 (원하면 그룹 명칭 변경 가능) -->
+              <!--  <div class="meal-card__section mt-3">
+          <div class="meal-card__section-title">후식</div>
+          <ul class="meal-sublist"> -->
+
+              <!-- <li class="meal-subitem">%NAME_K_8%</li> -->
+              <!-- <li class="meal-subitem">%NAME_K_9%</li> -->
+              <!-- <li class="meal-subitem">%NAME_K_10%</li> -->
+              <!--</ul>
+        </div> 
+      </div> -->
+
+              <!-- 하단 주석/특이사항(옵션) -->
+              <!--<div class="meal-card__footer text-muted px-3 pb-3">
+        %MEMO%
+      </div>-->
+
+            </div>
+          </div>
+
+
+
+
+      </template>
+
+      <div class="mt-0 text-center">
+        <hr>
+        <span class="small text-muted"> 식자재 수급 상황에 따라서 메뉴는 바뀔 수 있습니다. </span><br>
+        <img src="assets/svg/logos/logo.png" alt="Logo" class="mt-1 mb-3 center" style="height: 30px; width: auto;">
+      </div>
+  </div>
+
+
+  <!-- Footer -->
+  <!-----------------------------------------[ Modal ]----------------------------------------->
+  <div id="weeklyGallery" style="display:none">
+    <a id="weeklyPreview" data-fslightbox="weekly" href="">
+    </a>
+  </div>
+
+
+
+  </div>
+  </main>
+
+
+  <!-----------------------------------------[ Script ]----------------------------------------->
+  <script src="assets/vendor/jquery/dist/jquery.min.js"></script>
+  <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/moment/min/moment.min.js"></script>
+  <script src="assets/vendor/moment/min/locale/ko.min.js"></script>
+  <script src="assets/vendor/bootstrap-table/dist/bootstrap-table.min.js"></script>
+  <script src="assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="assets/vendor/bootstrap-table/dist/extensions/custom-view/bootstrap-table-custom-view.min.js"></script>
+
+  <script src="assets/vendor/fslightbox/index.js"></script>
+
+  <script>
+    // --------------------------------------------------------------------
+    // 전역 상태 (한 번만 정의)
+    // --------------------------------------------------------------------
+    const formState = {
+      lang: 'kr',
+      searchDate: moment().format('YYYY-MM-DD'),
+      searchSite: '0',
+      searchCategory: '0'
+    };
+
+    const CATEGORY_IDS = {
+      all: 'bt_all',
+      sang: 'bt_sang',   // 조식 (2)
+      trua: 'bt_trua',   // 중식 (3)
+      chieu: 'bt_chieu',  // 석식 (4)
+      dem: 'bt_dem'     // 야식 (5)
+    };
+
+    const GEO_BUTTON_SELECTOR = '#bt_use_location';
+    const GEOLOCATION_OPTIONS = {
+      enableHighAccuracy: false,
+      timeout: 10000,
+      maximumAge: 5 * 60 * 1000
+    };
+
+    // URL 파라미터 조회 함수
+    function getQueryParam(key) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(key);
+    }
+
+    const I18N = {
+      kr: {
+        TITLE_MAIN: '메인 메뉴',
+        TITLE_MENU: '메뉴',
+        ALL: '전체',
+        BREAKFAST: '조식',
+        LUNCH: '중식',
+        DINNER: '석식',
+        NIGHT: '야식',
+        NO_MENU: '등록된 메뉴가 없습니다.',
+        TXT_DOWNLOAD: ' 주간 메뉴 다운로드'
+      },
+      vn: {
+        TITLE_MAIN: 'Món chính',
+        TITLE_MENU: 'Thực đơn',
+        ALL: 'Tất cả',
+        BREAKFAST: 'sáng',
+        LUNCH: 'trưa',
+        DINNER: 'tối',
+        NIGHT: 'đêm',
+        NO_MENU: 'Không có món ăn',
+        TXT_DOWNLOAD: ' Tải xuống thực đơn hàng tuần'
+      }
+    };
+
+    // --------------------------------------------------------------------
+    // 초기화
+    // --------------------------------------------------------------------
+    $(document).ready(function () {
+
+      // 날짜 피커
+      $('#start_date').datepicker({
+        format: "yyyy-mm-dd",
+        todayHighlight: true,
+        autoclose: true
+      });
+
+      $('#start_date').datepicker('update', moment().format('YYYY-MM-DD'));
+
+      // 시간대에 따른 카테고리 자동 선택
+      autoSelectCategoryByTime();
+
+      // 현위치 버튼 초기화
+      initializeGeolocationButton();
+
+      // 언어 초기화
+      initializeLang();
+
+      I18N[formState.lang].MAIN;
+
+      applyI18N();
+
+    });
+
+    // --------------------------------------------------------------------
+    // DataRange 설정 (초기 날짜 설정)
+    // --------------------------------------------------------------------
+
+    function initializeLang() {
+      const urlLang = getQueryParam('lang');
+      if (urlLang && (urlLang === 'kr' || urlLang === 'vn')) {
+        formState.lang = urlLang;
+      }
+    }
+
+    function applyI18N() {
+      $('#tab_all').text(I18N[formState.lang].ALL);
+      $('#tab_sang').text(I18N[formState.lang].BREAKFAST);
+      $('#tab_trua').text(I18N[formState.lang].LUNCH);
+      $('#tab_chieu').text(I18N[formState.lang].DINNER);
+      $('#tab_dem').text(I18N[formState.lang].NIGHT);
+      $('#title_main').text(I18N[formState.lang].TITLE_MAIN);
+      $('#title_menu').text(I18N[formState.lang].TITLE_MENU);
+      $('#bt_week_download_text').text(I18N[formState.lang].TXT_DOWNLOAD);
+    }
+
+    // --------------------------------------------------------------------
+    // Toast 설정
+    // --------------------------------------------------------------------
+
+    function alert_toast(contents_alert) {
+      // 새로운 토스트 요소 생성
+      const toastContainer = document.querySelector('.toast-container');
+      const newToast = document.createElement('div');
+
+      newToast.className = 'toast border border-primary';
+      newToast.role = 'alert';
+      newToast.ariaLive = 'assertive';
+      newToast.ariaAtomic = 'true';
+      newToast.setAttribute('data-bs-delay', '3000');
+
+      // 토스트 헤더 구성
+      const toastHeader = document.createElement('div');
+      toastHeader.className = 'toast-header';
+      toastHeader.innerHTML = `
+        <strong class="me-auto text-black">Message</strong>
+        <small>Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    `;
+
+      // 토스트 바디 구성
+      const toastBody = document.createElement('div');
+      toastBody.className = 'toast-body';
+      toastBody.innerHTML = `<p class="text-black">${contents_alert}</p>`;
+
+      // 새로운 토스트에 헤더와 바디 추가
+      newToast.appendChild(toastHeader);
+      newToast.appendChild(toastBody);
+
+      // 토스트 컨테이너에 새로운 토스트 추가
+      toastContainer.appendChild(newToast);
+
+      // 새로 생성된 토스트를 Bootstrap의 Toast 객체로 초기화하고 보여줌
+      const toastInstance = new bootstrap.Toast(newToast);
+      toastInstance.show();
+
+      // 3초 후 토스트 자동 삭제 (필요 시 설정)
+      setTimeout(() => {
+        newToast.remove();
+      }, 2000);
+    }
+
+    // --------------------------------------------------------------------
+    // DataRange 설정 (초기 날짜 설정)
+    // --------------------------------------------------------------------
+    $(function () {
+      $('#start_date').datepicker('update', moment().subtract(0, 'days').format('YYYY-MM-DD'));
+    });
+
+    // --------------------------------------------------------------------
+    // 카테고리 자동/수동 선택 로직
+    // --------------------------------------------------------------------
+    let manualCategoryOverride = false;
+    let lastAutoSelectDate = moment().format('YYYY-MM-DD');
+
+    function getCategoryIdByNow(now = moment()) {
+      const h = now.hour(); // 0~23
+      if (h >= 5 && h <= 9) return CATEGORY_IDS.sang;   // 05:00–09:59 → 조식
+      if (h >= 10 && h <= 14) return CATEGORY_IDS.trua;   // 10:00–14:59 → 중식
+      if (h >= 15 && h <= 19) return CATEGORY_IDS.chieu;  // 15:00–19:59 → 석식
+      return CATEGORY_IDS.dem;                            // 나머지 → 야식
+    }
+
+    function autoSelectCategoryByTime() {
+      const today = moment().format('YYYY-MM-DD');
+
+      // 날짜 변경 시 수동 오버라이드 해제
+      if (lastAutoSelectDate !== today) {
+        manualCategoryOverride = false;
+        lastAutoSelectDate = today;
+      }
+      if (manualCategoryOverride) return;
+
+      const targetId = getCategoryIdByNow();
+      changeCategoryById(targetId);
+    }
+
+    function changeCategoryById(categoryId) {
+      const $buttons = $('.js-category');
+      const $active = $buttons.filter('[data-id="' + categoryId + '"]');
+      if ($active.length === 0) return;
+
+      // 상태 업데이트
+      const catValue = String($active.data('category'));
+      formState.searchCategory = catValue;
+
+      // 버튼 스타일 (Bootstrap btn 클래스 대신, 전용 active 클래스로 제어)
+      $buttons.removeClass('active').attr('aria-pressed', 'false');
+      $active.addClass('active').attr('aria-pressed', 'true');
+
+      // 테이블 리프레시
+      if (typeof queryParams_koreanMenu === 'function') {
+        queryParams_koreanMenu({});
+      }
+      $('#tb_menu_korean').bootstrapTable('refresh');
+    }
+
+    // 카테고리 버튼 이벤트
+    $(document).on('click keydown', '.js-category', function (e) {
+      if (e.type === 'click' || (e.type === 'keydown' && (e.key === 'Enter' || e.key === ' '))) {
+        e.preventDefault();
+        manualCategoryOverride = true;
+        changeCategoryById($(this).data('id'));
+      }
+    });
+
+    // 주기적 재평가 (5분마다)
+    $(function () {
+      autoSelectCategoryByTime();
+      setInterval(autoSelectCategoryByTime, 5 * 60 * 1000);
+    });
+
+    // --------------------------------------------------------------------
+    // 현위치 / Geolocation
+    // --------------------------------------------------------------------
+    function initializeGeolocationButton() {
+      const $button = $(GEO_BUTTON_SELECTOR);
+      if ($button.length === 0) return;
+
+      $button.off('click.geolocation').on('click.geolocation', function () {
+        requestUserLocation();
+      });
+    }
+
+    function requestUserLocation() {
+      const $button = $(GEO_BUTTON_SELECTOR);
+      if ($button.length === 0) return;
+
+      if (!navigator.geolocation) {
+        alert_toast && alert_toast('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
+        //alert_swal('오류', '이 브라우저에서는 위치 정보를 사용할 수 없습니다.', 'error');
+        return;
+      }
+
+      setGeoButtonLoading(true);
+
+      navigator.geolocation.getCurrentPosition(
+        handleGeolocationSuccess,
+        handleGeolocationError,
+        GEOLOCATION_OPTIONS
+      );
+    }
+
+    function setGeoButtonLoading(isLoading) {
+      const $button = $(GEO_BUTTON_SELECTOR);
+      if ($button.length === 0) return;
+
+      if (isLoading) {
+        if (!$button.data('original-html')) {
+          $button.data('original-html', $button.html());
+        }
+        const loadingText = $button.data('loading-text') || 'Loading';
+        const spinner = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>';
+        $button.prop('disabled', true).html(spinner + loadingText);
+      } else {
+        const originalHtml = $button.data('original-html');
+        if (originalHtml) {
+          $button.html(originalHtml);
+        }
+        $button.prop('disabled', false);
+      }
+    }
+
+    function handleGeolocationSuccess(position) {
+      const coords = position && position.coords;
+      if (!coords) {
+        setGeoButtonLoading(false);
+        alert_toast && alert_toast('위치 정보를 불러오지 못했습니다. 다시 시도해주세요.');
+        //alert_swal('오류', '위치 정보를 불러오지 못했습니다. 다시 시도해주세요.', 'error');
+        return;
+      }
+      fetchNearestSite(coords.latitude, coords.longitude);
+    }
+
+    function handleGeolocationError(error) {
+      setGeoButtonLoading(false);
+      alert_toast && alert_toast(describeGeolocationError(error));
+    }
+
+    function describeGeolocationError(error) {
+      if (!error) return '위치 정보를 가져오는데 실패했습니다.';
+
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          return '위치 정보 접근이 거부되었습니다.';
+        case error.POSITION_UNAVAILABLE:
+          return '위치 정보를 사용할 수 없습니다. 잠시 후 다시 시도해주세요.';
+        case error.TIMEOUT:
+          return '위치 정보 요청이 시간 초과되었습니다.';
+        default:
+          return '위치 정보를 가져오는데 실패했습니다.';
+      }
+    }
+
+    function fetchNearestSite(latitude, longitude) {
+      $.ajax({
+        method: 'POST',
+        url: '#',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ latitude, longitude }),
+        success: function (response) {
+          setGeoButtonLoading(false);
+
+          if (!response || response.success === false || !response.data) {
+            const message = (response && response.message) || '가까운 사업장을 찾지 못했습니다.';
+            alert_toast && alert_toast(message);
+            return;
+          }
+
+          applyNearestSiteSelection(response.data, response.message);
+        },
+        error: function (xhr) {
+          setGeoButtonLoading(false);
+          const message = (xhr && xhr.responseJSON && xhr.responseJSON.message) || '사업장 정보를 불러오는데 실패했습니다.';
+          alert_toast && alert_toast(message);
+        }
+      });
+    }
+
+    // select 없이 formState만 갱신해서 사용
+    function applyNearestSiteSelection(siteData, message) {
+      if (!siteData || !siteData.id) {
+        alert_toast && alert_toast('선택할 사업장 정보가 없습니다.');
+        return;
+      }
+
+      const siteId = String(siteData.id);
+      const siteLabel = siteData.text || siteData.call_name || siteData.name || siteId;
+
+      formState.searchSite = siteId;
+
+      queryParams_koreanMenu({});
+      $('#tb_menu_korean').bootstrapTable('refresh');
+
+      const toastMessage = message || siteLabel + ' 사업장으로 이동했습니다.';
+      alert_toast && alert_toast(toastMessage);
+    }
+
+    // --------------------------------------------------------------------
+    // 검색/날짜 변경 이벤트 (site select 관련 이벤트 제거됨)
+    // --------------------------------------------------------------------
+
+    $('#bt_date_subtract').on('click', function () {
+      var currentDateStr = $('#start_date').val();
+      var currentDate = moment(currentDateStr, 'YYYY-MM-DD');
+      var newDate = currentDate.subtract(1, 'days');
+      $('#start_date').datepicker('update', newDate.format('YYYY-MM-DD'));
+
+      queryParams_koreanMenu({});
+      $('#tb_menu_korean').bootstrapTable('refresh');
+    });
+
+    $('#bt_date_add').on('click', function () {
+      var currentDateStr = $('#start_date').val();
+      var currentDate = moment(currentDateStr, 'YYYY-MM-DD');
+      var newDate = currentDate.add(1, 'days');
+      $('#start_date').datepicker('update', newDate.format('YYYY-MM-DD'));
+
+      queryParams_koreanMenu({});
+      $('#tb_menu_korean').bootstrapTable('refresh');
+    });
+
+    $('#start_date').datepicker({
+      format: "yyyy-mm-dd",
+      todayHighlight: true,
+      autoclose: true
+    }).on('changeDate', function () {
+      queryParams_koreanMenu({});
+      $('#tb_menu_korean').bootstrapTable('refresh');
+    });
+
+    $('#bt_search').on('click', function () {
+      queryParams_koreanMenu({});
+      $('#tb_menu_korean').bootstrapTable('refresh');
+    });
+
+    // --------------------------------------------------------------------
+    // 메인 테이블 queryParams
+    // --------------------------------------------------------------------
+    function queryParams_koreanMenu(params) {
+      params = params || {};
+
+      // site는 URL 파라미터/현위치에서 formState.searchSite로만 관리
+      var searched_site = formState.searchSite;
+      var searched_category = formState.searchCategory;
+      var searched_date = $("#start_date").val() || formState.searchDate;
+
+      params.siteId = searched_site;
+      params.categoryId = searched_category;
+      params.date = searched_date;
+
+      return params;
+    }
+
+    // --------------------------------------------------------------------
+    // 메인 테이블 queryParams
+    // --------------------------------------------------------------------
+    $('#tb_menu_korean').on('load-success.bs.table', function (e, data) {
+      // data가 배열이거나 {rows: []} 형태일 수 있음
+      let rows = [];
+
+      if (Array.isArray(data)) {
+        rows = data;
+      } else if (data && Array.isArray(data.rows)) {
+        rows = data.rows;
+      } else if (data && Array.isArray(data.data)) {
+        rows = data.data;
+      }
+
+      if (rows.length === 0) {
+        // 팝업 대신 화면 안내
+        $('#empty_title').text(I18N[formState.lang].EMPTY_TITLE || '조회 결과 없음');
+        $('#empty_desc').text(I18N[formState.lang].EMPTY_DESC || '선택한 조건에 해당하는 식단이 없습니다.');
+        showEmptyState(true);
+      } else {
+        showEmptyState(false);
+      }
+    });
+
+    function showEmptyState(show) {
+      $('#menu-empty-state').toggle(!!show);
+      $('#menu-card-container').toggle(!show);
+    }
+
+    // --------------------------------------------------------------------
+    // rowStyle (행 스타일 없으면 빈 객체 반환)
+    // --------------------------------------------------------------------
+    function rowStyle(row, index) {
+      return {};
+    }
+
+    // --------------------------------------------------------------------
+    // 서버 응답을 bootstrap-table 형식으로 변환
+    // --------------------------------------------------------------------
+    function responseHandler(res) {
+      //console.log('원본 응답:', res);
+
+      if (Array.isArray(res)) {
+        return res;
+      }
+
+      if (res && Array.isArray(res.rows)) {
+        return res;
+      }
+
+      if (res && Array.isArray(res.data)) {
+        return res.data;
+      }
+
+      //console.warn('알 수 없는 응답 구조, 빈 데이터로 처리:', res);
+      return [];
+    }
+
+
+    // --------------------------------------------------------------------
+    // 카드 View Formatter
+    // --------------------------------------------------------------------
+    function customViewFormatter(data) {
+      var template = $('#profileTemplate').html();
+      var view = '';
+
+      $.each(data, function (i, row) {
+        // --- 1) 요일 계산 및 날짜 형식화 ---
+        var dateMoment = moment(row.apply_date, 'YYYY-MM-DD');
+        var dayOfWeek = '';
+
+        if (formState.lang === 'kr') {
+          dayOfWeek = dateMoment.locale('ko').format('ddd'); // 한국어 (월, 화...)
+          //console.log('formState.lang:', formState.lang);
+
+        } else {
+          dayOfWeek = dateMoment.locale('vi').format('ddd'); // 베트남어 (T2, T3...)
+        }
+
+        // 요일을 포함한 날짜 (카드 표시용)
+        var displayDate = moment(row.apply_date, 'YYYY-MM-DD').format('MM/DD') + ' (' + dayOfWeek + ')';
+
+        // --- 2) 메인 메뉴 및 서브 메뉴 처리 ---
+        var mainMenu = (formState.lang === 'vn' ? row.menu_name_v_3 : row.menu_name_k_3) || '';
+
+        var menus = [
+          formState.lang === 'vn' ? row.menu_name_v_1 : row.menu_name_k_1,
+          formState.lang === 'vn' ? row.menu_name_v_2 : row.menu_name_k_2,
+          formState.lang === 'vn' ? row.menu_name_v_4 : row.menu_name_k_4,
+          formState.lang === 'vn' ? row.menu_name_v_5 : row.menu_name_k_5,
+          formState.lang === 'vn' ? row.menu_name_v_6 : row.menu_name_k_6,
+          formState.lang === 'vn' ? row.menu_name_v_7 : row.menu_name_k_7
+        ].map(function (v) { return (v || '').trim(); }).filter(function (v) { return v.length > 0; });
+
+        var menuLis = menus.map(function (v) {
+          return '<li class="meal-item">' + v + '</li>';
+        }).join('');
+
+        if (!menuLis) {
+          menuLis = '<li class="meal-subitem">등록된 메뉴가 없습니다.</li>';
+        }
+
+        // --- 3) 템플릿 치환 ---
+        view += template
+          .replace('%TITLE_MAIN%', I18N[formState.lang].TITLE_MAIN)
+          .replace('%TITLE_MENU%', I18N[formState.lang].TITLE_MENU)
+          .replace('%TXT_MAIN_MENU%', I18N[formState.lang].MAIN)
+          .replace('%WORKPLACE%', row.workplace_name || '')
+          .replace('%APPLYDATE%', displayDate)           // 요일 포함 날짜
+          .replace('%APPLYDATE_RAW%', row.apply_date || '') // 버튼용 원본 날짜
+          .replace('%SITE_ID%', row.site_url || '')       // 버튼용 사업장 ID
+          .replace('%NAME_K_3%', mainMenu)
+          .replace('%MENU_LIST%', menuLis)
+          .replace('%CATEGORY_K%', formState.lang === 'vn' ? row.category_name_v : row.category_name_k);
+      });
+
+      return '<div class="row mx-0">' + view + '</div>';
+    }
+
+    // --------------------------------------------------------------------
+    // URL 파라미터 반영
+    // --------------------------------------------------------------------
+    $(function () {
+      const siteParam = getQueryParam('site');
+      const dateParam = getQueryParam('date');
+
+      if (siteParam) {
+        formState.searchSite = siteParam;
+      }
+
+      if (dateParam) {
+        formState.searchDate = dateParam;
+        $('#start_date').datepicker('update', dateParam);
+      } else {
+        formState.searchDate = $('#start_date').val() || moment().format('YYYY-MM-DD');
+      }
+
+      $('#tb_menu_korean').bootstrapTable('refresh');
+    });
+
+
+    // --------------------------------------------------------------------
+    // 주간 메뉴 뷰어
+    // --------------------------------------------------------------------
+    // 주간 메뉴 뷰어 로직 개선
+
+
+    $(document).on('click', '.js-week-download', function () {
+
+      const site = $(this).data('site');
+      const date = $(this).data('date');
+
+      if (!site || !date) {
+        alert_toast('사업장 또는 날짜 정보가 없습니다.');
+        return;
+      }
+
+      const m = moment(date, 'YYYY-MM-DD');
+      const year = m.isoWeekYear();
+      const week = String(m.isoWeek()).padStart(2, '');   // 핵심 수정
+
+      const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${site}/${week}?t=${Date.now()}`;
+
+      $.get(checkUrl)
+        .done(function (res) {
+
+          if (!res || res.success !== true) {
+            alert_toast((res && res.message) || '등록된 주간 식단이 없습니다.');
+            return;
+          }
+
+          const img = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${site}/${week}?t=${Date.now()}`;
+          $('#weeklyPreview').attr('href', img);
+
+          refreshFsLightbox();
+          $('#weeklyPreview')[0].click();
+        })
+        .fail(function () {
+          alert_toast('주간 식단 정보를 불러오지 못했습니다.');
+        });
+    });
+
+    /**
+        $('#bt_week_download').on('click', function () {
+          const date = $('#start_date').val();
+          const m = moment(date, 'YYYY-MM-DD');
+          const year = m.isoWeekYear();
+          const week = String(m.isoWeek()).padStart(2, '');
+          const siteId = formState.searchSite;
+          const url = `${year}/${siteId}/${week}/menu.jpg`;
+          const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${siteId}/${week}`;
+    
+          $.get(checkUrl, function (res) {
+    
+            if (!res.success) {
+              alert_toast('등록된 주간 식단이 없습니다.');
+              return;
+            }
+    
+            const imageUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${siteId}/${week}?t=${Date.now()}`;
+    
+            $("#modal-show-img").modal('show');
+            $('#ms_img').attr("src", imageUrl);
+          });
+    
+        });
+    
+    **/
+
+  </script>
+</body>
+
+</html>
