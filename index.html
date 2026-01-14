@@ -192,7 +192,7 @@
 
         <div class="toolbar row p-0 mt-0 mb-0 d-flex align-items-left justify-content-start">
           <!-- 날짜 + 검색 (site select 제거 후 전체 폭 사용) -->
-          <div class="col col-12 col-lg-2 col-md-4">
+          <div class="col col-12 col-lg-3 col-md-6">
             <div class="row g-0">
               <div class="col-12">
                 <div class="input-group">
@@ -212,7 +212,7 @@
           </div>
 
           <!-- 카테고리 버튼 -->
-          <div class="col col-12 col-lg-4 col-md-4 me-0 text-center">
+          <div class="col col-12 col-x1-4 col-lg-6 col-md-6 me-0 text-center">
             <div class="row">
               <div class="tabs" role="tablist" aria-label="메뉴 카테고리">
                 <button type="button" class="tab-btn active js-category" data-id="bt_all" data-category="0"
@@ -226,18 +226,15 @@
                 <button type="button" class="tab-btn js-category" data-id="bt_dem" data-category="5"
                   id="tab_dem">%TXT_NIGHT%</button>
 
-                <button class="btn btn-primary" id="bt_week_download">
-                  <i class="bi bi-download"></i>
-                </button>
               </div>
-
-
             </div>
-
           </div>
 
-          <!-- 주간 메뉴 다운로드 -->
 
+          <!-- 주간 메뉴 다운로드 -->
+          <!--<button class="btn btn-primary" id="bt_week_download">
+            <i class="bi bi-download"></i>
+          </button> -->
 
           <!-- 현위치 버튼 -->
           <!--<div class="col col-12 col-lg-7 col-md-4 text-start">
@@ -271,6 +268,8 @@
             <tr>
               <th data-sortable="true" data-field="amk_seq" data-visible="false" data-switchable="true"
                 data-align="center"></th>
+              <th data-sortable="true" data-field="site_url" data-visible="false" data-switchable="true"
+                data-align="center"></th>
               <th data-sortable="true" data-field="workplace" data-visible="false" data-switchable="true"
                 data-align="center"></th>
               <th data-sortable="true" data-field="category" data-visible="false" data-switchable="true"
@@ -302,16 +301,11 @@
           <div class="meal-card p-4 text-center">
             <div class="mt-3 mb-3"><img src="assets/svg/illustrations/oc-error.svg" alt="No Data" style="width: 150px;">
             </div>
-
             <div class="meal-card__section-title" id="empty_title"></div>
             <div class="text-muted mt-2 mb-5" id="empty_desc"></div>
           </div>
         </div>
       </div>
-
-
-
-
 
       <!-- 카드 템플릿 -->
       <!-- 카드 템플릿 -->
@@ -327,6 +321,10 @@
                   <div class="meal-card__meta">
                     <span class="meal-chip">%APPLYDATE%</span>
                     <span class="meal-chip">%CATEGORY_K%</span>
+                    <button class="btn btn-outline-primary btn-sm ms-1 js-week-download" data-site="%SITE_ID%"
+                      data-date="%APPLYDATE_RAW%">
+                      <i class="bi bi-download"></i>
+                    </button>
                   </div>
                 </div>
 
@@ -388,23 +386,9 @@
 
   <!-- Footer -->
   <!-----------------------------------------[ Modal ]----------------------------------------->
-  <div class="modal" id="modal-show-img" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="card" id="print-request">
-            <div class="card card-lg mb-0">
-              <div class="row">
-                <img src="" id="ms_img">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div id="weeklyGallery" style="display:none">
+    <a id="weeklyPreview" data-fslightbox="weekly" href="">
+    </a>
   </div>
 
 
@@ -417,9 +401,12 @@
   <script src="assets/vendor/jquery/dist/jquery.min.js"></script>
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/moment/min/moment.min.js"></script>
+  <script src="assets/vendor/moment/min/locale/ko.min.js"></script>
   <script src="assets/vendor/bootstrap-table/dist/bootstrap-table.min.js"></script>
   <script src="assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
   <script src="assets/vendor/bootstrap-table/dist/extensions/custom-view/bootstrap-table-custom-view.min.js"></script>
+
+  <script src="assets/vendor/fslightbox/index.js"></script>
 
   <script>
     // --------------------------------------------------------------------
@@ -504,6 +491,7 @@
       I18N[formState.lang].MAIN;
 
       applyI18N();
+
     });
 
     // --------------------------------------------------------------------
@@ -894,14 +882,24 @@
       var view = '';
 
       $.each(data, function (i, row) {
-        // 1) 메인 메뉴 (대표 1개)
-        var mainMenu = (
-          formState.lang === 'vn'
-            ? row.menu_name_v_3
-            : row.menu_name_k_3
-        ) || '';
+        // --- 1) 요일 계산 및 날짜 형식화 ---
+        var dateMoment = moment(row.apply_date, 'YYYY-MM-DD');
+        var dayOfWeek = '';
 
-        // 2) 일반 메뉴 (빈 값 제거)
+        if (formState.lang === 'kr') {
+          dayOfWeek = dateMoment.locale('ko').format('ddd'); // 한국어 (월, 화...)
+          //console.log('formState.lang:', formState.lang);
+
+        } else {
+          dayOfWeek = dateMoment.locale('vi').format('ddd'); // 베트남어 (T2, T3...)
+        }
+
+        // 요일을 포함한 날짜 (카드 표시용)
+        var displayDate = moment(row.apply_date, 'YYYY-MM-DD').format('MM/DD') + ' (' + dayOfWeek + ')';
+
+        // --- 2) 메인 메뉴 및 서브 메뉴 처리 ---
+        var mainMenu = (formState.lang === 'vn' ? row.menu_name_v_3 : row.menu_name_k_3) || '';
+
         var menus = [
           formState.lang === 'vn' ? row.menu_name_v_1 : row.menu_name_k_1,
           formState.lang === 'vn' ? row.menu_name_v_2 : row.menu_name_k_2,
@@ -909,45 +907,35 @@
           formState.lang === 'vn' ? row.menu_name_v_5 : row.menu_name_k_5,
           formState.lang === 'vn' ? row.menu_name_v_6 : row.menu_name_k_6,
           formState.lang === 'vn' ? row.menu_name_v_7 : row.menu_name_k_7
-        ].map(function (v) { return (v || '').trim(); })
-          .filter(function (v) { return v.length > 0; });
+        ].map(function (v) { return (v || '').trim(); }).filter(function (v) { return v.length > 0; });
 
         var menuLis = menus.map(function (v) {
           return '<li class="meal-item">' + v + '</li>';
         }).join('');
 
-        // 메뉴가 하나도 없을 때 표시(선택)
         if (!menuLis) {
           menuLis = '<li class="meal-subitem">등록된 메뉴가 없습니다.</li>';
         }
 
-        // 3) 카드 렌더링
+        // --- 3) 템플릿 치환 ---
         view += template
           .replace('%TITLE_MAIN%', I18N[formState.lang].TITLE_MAIN)
           .replace('%TITLE_MENU%', I18N[formState.lang].TITLE_MENU)
           .replace('%TXT_MAIN_MENU%', I18N[formState.lang].MAIN)
-          .replace('%ROWINFO%', row.amk_seq || '')
-          .replace('%IMG%', 'assets/img/20251215.png')
-          .replace('%SEQ%', row.amk_seq || '')
           .replace('%WORKPLACE%', row.workplace_name || '')
-          .replace('%CATEGORY%', '  ' + (row.category || ''))
-          .replace('%APPLYDATE%', '  ' + (row.apply_date || ''))
+          .replace('%APPLYDATE%', displayDate)           // 요일 포함 날짜
+          .replace('%APPLYDATE_RAW%', row.apply_date || '') // 버튼용 원본 날짜
+          .replace('%SITE_ID%', row.site_url || '')       // 버튼용 사업장 ID
           .replace('%NAME_K_3%', mainMenu)
           .replace('%MENU_LIST%', menuLis)
-          //.replace('%CATEGORY_K%', ' ' + (row.category_name_k || ''))
-          .replace('%CATEGORY_V%', ' ' + (row.category_name_v || ''))
-          .replace('%CATEGORY_K%',
-            formState.lang === 'vn'
-              ? row.category_name_v
-              : row.category_name_k
-          );
+          .replace('%CATEGORY_K%', formState.lang === 'vn' ? row.category_name_v : row.category_name_k);
       });
 
       return '<div class="row mx-0">' + view + '</div>';
     }
 
     // --------------------------------------------------------------------
-    // URL 파라미터 (?site=2&date=2025-01-01 등) 반영
+    // URL 파라미터 반영
     // --------------------------------------------------------------------
     $(function () {
       const siteParam = getQueryParam('site');
@@ -971,31 +959,70 @@
     // --------------------------------------------------------------------
     // 주간 메뉴 뷰어
     // --------------------------------------------------------------------
-    $('#bt_week_download').on('click', function () {
-      const date = $('#start_date').val();
+    // 주간 메뉴 뷰어 로직 개선
+
+
+    $(document).on('click', '.js-week-download', function () {
+
+      const site = $(this).data('site');
+      const date = $(this).data('date');
+
+      if (!site || !date) {
+        alert_toast('사업장 또는 날짜 정보가 없습니다.');
+        return;
+      }
+
       const m = moment(date, 'YYYY-MM-DD');
       const year = m.isoWeekYear();
-      const week = String(m.isoWeek()).padStart(2, '');
-      const siteId = formState.searchSite;
-      const url = `${year}/${siteId}/${week}/menu.jpg`;
-      const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${siteId}/${week}`;
+      const week = String(m.isoWeek()).padStart(2, '');   // 핵심 수정
 
-      $.get(checkUrl, function (res) {
+      const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${site}/${week}?t=${Date.now()}`;
 
-        if (!res.success) {
-          alert_toast('등록된 주간 식단이 없습니다.');
-          return;
-        }
+      $.get(checkUrl)
+        .done(function (res) {
 
-        const imageUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${siteId}/${week}?t=${Date.now()}`;
+          if (!res || res.success !== true) {
+            alert_toast((res && res.message) || '등록된 주간 식단이 없습니다.');
+            return;
+          }
 
-        $("#modal-show-img").modal('show');
-        $('#ms_img').attr("src", imageUrl);
-      });
+          const img = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${site}/${week}?t=${Date.now()}`;
+          $('#weeklyPreview').attr('href', img);
 
+          refreshFsLightbox();
+          $('#weeklyPreview')[0].click();
+        })
+        .fail(function () {
+          alert_toast('주간 식단 정보를 불러오지 못했습니다.');
+        });
     });
 
-
+    /**
+        $('#bt_week_download').on('click', function () {
+          const date = $('#start_date').val();
+          const m = moment(date, 'YYYY-MM-DD');
+          const year = m.isoWeekYear();
+          const week = String(m.isoWeek()).padStart(2, '');
+          const siteId = formState.searchSite;
+          const url = `${year}/${siteId}/${week}/menu.jpg`;
+          const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${siteId}/${week}`;
+    
+          $.get(checkUrl, function (res) {
+    
+            if (!res.success) {
+              alert_toast('등록된 주간 식단이 없습니다.');
+              return;
+            }
+    
+            const imageUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${siteId}/${week}?t=${Date.now()}`;
+    
+            $("#modal-show-img").modal('show');
+            $('#ms_img').attr("src", imageUrl);
+          });
+    
+        });
+    
+    **/
 
   </script>
 </body>
