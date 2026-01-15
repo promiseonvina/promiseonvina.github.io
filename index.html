@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no" />
   <title>Promiseon Korean Menu (FAST)</title>
   <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
@@ -27,13 +29,39 @@
       --muted: #6B7280;
       --primary: #2563EB;
       --danger: #DC2626;
-      --shadow: 0 1px 2px rgba(0,0,0,.04);
+      --shadow: 0 1px 2px rgba(0, 0, 0, .04);
       --radius: 14px;
     }
-    body { font-family: "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); }
-    .header-sticky { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid var(--border); }
-    .toolbar { display:flex; gap:12px; align-items:center; justify-content:space-between; padding:10px 16px; flex-wrap:wrap; }
-    .tabs { display:flex; gap:8px; flex-wrap:wrap; }
+
+    body {
+      font-family: "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .header-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .tabs .tab-btn {
       border: 1px solid var(--border);
       background: #fff;
@@ -43,6 +71,7 @@
       color: var(--text);
       line-height: 1;
     }
+
     .tabs .tab-btn.active {
       border-color: var(--primary);
       color: var(--primary);
@@ -50,29 +79,147 @@
       font-weight: 700;
     }
 
-    .meal-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; }
-    .meal-card__header { background:#fff; border-bottom:1px solid var(--border); padding:12px 14px; }
-    .meal-card__workplace { font-size:16px; font-weight:800; }
-    .meal-card__meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-    .meal-chip { padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border); background:#F9FAFB; }
-    .meal-card__section-title { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px; }
-    .meal-card__primary { font-size:15px; font-weight:800; color:var(--danger); border-left:4px solid var(--danger); padding-left:10px; }
-    .meal-item { font-size:14px; line-height:1.7; }
-    .meal-list { margin:0; padding-left: 18px; }
+    .meal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .meal-card__header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px;
+    }
+
+    .meal-card__workplace {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .meal-card__meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .meal-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: #F9FAFB;
+    }
+
+    .meal-card__section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .meal-card__primary {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+      padding-left: 10px;
+    }
+
+    .meal-item {
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .meal-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
     .skeleton {
       background: linear-gradient(90deg, #f2f2f2 25%, #eaeaea 37%, #f2f2f2 63%);
       background-size: 400% 100%;
       animation: shimmer 1.2s ease-in-out infinite;
       border-radius: 10px;
     }
-    @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-    .sk-card { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); background:#fff; overflow:hidden; }
-    .sk-h { height: 84px; border-bottom:1px solid var(--border); }
-    .sk-b { padding: 14px; }
-    .sk-line { height: 12px; margin: 10px 0; }
-    .sk-line.sm { width: 55%; }
-    .sk-line.md { width: 75%; }
-    .sk-line.lg { width: 95%; }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 0;
+      }
+
+      100% {
+        background-position: -100% 0;
+      }
+    }
+
+    .sk-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .sk-h {
+      height: 84px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sk-b {
+      padding: 14px;
+    }
+
+    .sk-line {
+      height: 12px;
+      margin: 10px 0;
+    }
+
+    .sk-line.sm {
+      width: 55%;
+    }
+
+    .sk-line.md {
+      width: 75%;
+    }
+
+    .sk-line.lg {
+      width: 95%;
+    }
+
+    /* 1) 기본: 왼쪽부터 붙여 배치 */
+    .toolbar {
+      justify-content: flex-start;
+      /* space-between 제거 효과 */
+    }
+
+    /* 2) 상태 영역은 오른쪽 끝으로 밀기 */
+    .toolbar>.d-flex.gap-2.align-items-center:last-child {
+      margin-left: auto;
+    }
+
+    /* 3) 큰 화면(PC): 탭을 검색 옆에 붙이고 한 줄 유지 */
+    @media (min-width: 992px) {
+      .toolbar {
+        flex-wrap: nowrap;
+      }
+
+      .tabs {
+        margin-left: 12px;
+      }
+    }
+
+    /* 4) 작은 화면(모바일/태블릿): 탭을 아래줄로 내리기 */
+    @media (max-width: 991.98px) {
+      .tabs {
+        width: 100%;
+        margin-top: 10px;
+        order: 3;
+        /* 아래로 */
+      }
+    }
   </style>
 </head>
 
@@ -94,9 +241,12 @@
           <div class="d-flex gap-2 align-items-center" style="min-width: 280px;">
             <div class="input-group">
               <input type="date" class="form-control" id="start_date" />
-              <button type="button" class="btn btn-secondary" id="bt_date_subtract" aria-label="previous day"><i class="bi bi-caret-left"></i></button>
-              <button type="button" class="btn btn-secondary" id="bt_date_add" aria-label="next day"><i class="bi bi-caret-right"></i></button>
-              <button class="btn btn-primary" id="bt_search" type="button" aria-label="search"><i class="bi bi-search"></i></button>
+              <button type="button" class="btn btn-secondary" id="bt_date_subtract" aria-label="previous day"><i
+                  class="bi bi-caret-left"></i></button>
+              <button type="button" class="btn btn-secondary" id="bt_date_add" aria-label="next day"><i
+                  class="bi bi-caret-right"></i></button>
+              <button class="btn btn-primary" id="bt_search" type="button" aria-label="search"><i
+                  class="bi bi-search"></i></button>
             </div>
           </div>
 
@@ -313,7 +463,7 @@
     let currentAbort = null;
     const inflight = new Map(); // key -> Promise
 
-    async function fetchMenu({date, site, category, lang}, {signal} = {}) {
+    async function fetchMenu({ date, site, category, lang }, { signal } = {}) {
       const url = new URL(API_BASE);
       url.searchParams.set('date', date);
       url.searchParams.set('siteId', site);
@@ -406,7 +556,7 @@
         node.querySelector('.js-main-menu').textContent = main || '';
 
         const list = node.querySelector('.js-menu-list');
-        const menus = [1,2,4,5,6,7].map(i => menuValue(row, i)).filter(v => v);
+        const menus = [1, 2, 4, 5, 6, 7].map(i => menuValue(row, i)).filter(v => v);
 
         if (menus.length === 0) {
           const li = document.createElement('li');
@@ -474,7 +624,7 @@
     }
 
     // ---- Reload (SWR: cache-first, then revalidate) ----
-    async function reload({revalidate = true} = {}) {
+    async function reload({ revalidate = true } = {}) {
       const date = document.getElementById('start_date').value || moment().format('YYYY-MM-DD');
       const site = formState.searchSite;
       const category = formState.searchCategory;
@@ -506,7 +656,7 @@
       currentAbort = new AbortController();
 
       try {
-        const res = await fetchMenu({date, site, category, lang}, { signal: currentAbort.signal });
+        const res = await fetchMenu({ date, site, category, lang }, { signal: currentAbort.signal });
         cacheSet(key, res);
 
         const rows = normalizeRows(res);
@@ -516,7 +666,7 @@
           showEmptyState(false);
           // Defer heavy DOM work to keep UI responsive on low-end devices
           const doRender = () => renderCards(rows);
-          if ('requestIdleCallback' in window) requestIdleCallback(doRender, {timeout: 300});
+          if ('requestIdleCallback' in window) requestIdleCallback(doRender, { timeout: 300 });
           else setTimeout(doRender, 0);
         }
         setStatus('');
@@ -544,7 +694,7 @@
 
       const m = moment(date, 'YYYY-MM-DD');
       const year = m.isoWeekYear();
-      const week = String(m.isoWeek()).padStart(2, '0');
+      const week = String(m.isoWeek()).padStart(2, '');
 
       const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${site}/${week}?t=${Date.now()}`;
 
@@ -572,8 +722,8 @@
 
     document.getElementById('bt_date_subtract').addEventListener('click', () => { addDaysToInputDate(-1); reload(); });
     document.getElementById('bt_date_add').addEventListener('click', () => { addDaysToInputDate(1); reload(); });
-    document.getElementById('bt_search').addEventListener('click', () => reload({revalidate: true}));
-    document.getElementById('start_date').addEventListener('change', () => reload({revalidate: true}));
+    document.getElementById('bt_search').addEventListener('click', () => reload({ revalidate: true }));
+    document.getElementById('start_date').addEventListener('change', () => reload({ revalidate: true }));
 
     document.querySelectorAll('.js-category').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -611,8 +761,9 @@
       setInterval(() => { autoSelectCategoryByTime(); setActiveCategoryButton(formState.searchCategory); }, 5 * 60 * 1000);
 
       // initial load
-      reload({revalidate: true});
+      reload({ revalidate: true });
     })();
   </script>
 </body>
+
 </html>
