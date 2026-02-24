@@ -221,9 +221,11 @@
       }
     }
 
-
-
-    
+    #btn_lang_kr.active,
+    #btn_lang_vn.active {
+      border-color: var(--primary);
+      background: #EFF6FF;
+    }
   </style>
   <!-----------------------------------------[ Head Section ]----------------------------------------->
   <!-- Google Analytics GA4 -->
@@ -242,7 +244,7 @@
   <div class="header-sticky">
     <header class="navbar navbar-expand-lg navbar-bordered bg-white m-2">
       <div class="container-fluid">
-        <img class="mb-1" src="assets/svg/logos/main_logo.png" alt="Logo" style="height: 100px;">
+        <img id="main_logo" class="mb-1" src="assets/svg/logos/main_logo_kr.png" alt="Logo" style="height: 100px;">
       </div>
     </header>
 
@@ -250,7 +252,7 @@
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>
 
     <main class="main">
-      <div class="content container-fluid">
+      <div class="">
         <div class="toolbar">
           <!-- Date (native input=date: fastest) -->
           <div class="d-flex gap-2 align-items-center" style="min-width: 280px;">
@@ -276,6 +278,14 @@
 
           <!-- Right side: simple status -->
           <div class="d-flex gap-2 align-items-center">
+            <button class="btn btn-light p-1 border" id="btn_lang_kr" aria-label="한국어">
+              <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" style="height:22px;">
+            </button>
+
+            <button class="btn btn-light p-1 border" id="btn_lang_vn" aria-label="베트남어">
+              <img src="assets/vendor/flag-icon-css/flags/4x3/vn.svg" alt="VN" style="height:22px;">
+            </button>
+
             <span class="small text-muted" id="status_text"></span>
           </div>
         </div>
@@ -300,7 +310,8 @@
 
         <div class="mt-0 text-center">
           <hr>
-          <span class="small text-muted"> 식자재 수급 상황에 따라서 메뉴는 바뀔 수 있습니다. </span><br>
+          <span class="small text-muted" id="footer_notice"></span>
+          <br>
           <img src="assets/svg/logos/logo.png" alt="Logo" class="mt-1 mb-3 center" style="height: 30px; width: auto;">
         </div>
       </div>
@@ -399,7 +410,8 @@
         NIGHT: '야식',
         EMPTY_TITLE: '조회 결과 없음',
         EMPTY_DESC: '선택한 조건에 해당하는 식단이 없습니다.',
-        NO_MENU: '등록된 메뉴가 없습니다.'
+        NO_MENU: '등록된 메뉴가 없습니다.',
+        FOOTER_NOTICE: '식자재 수급 상황에 따라서 메뉴는 바뀔 수 있습니다.'
       },
       vn: {
         TITLE_MAIN: 'Món chính',
@@ -411,7 +423,8 @@
         NIGHT: 'đêm',
         EMPTY_TITLE: 'Không có dữ liệu',
         EMPTY_DESC: 'Không có thực đơn cho điều kiện đã chọn.',
-        NO_MENU: 'Không có món ăn'
+        NO_MENU: 'Không có món ăn',
+        FOOTER_NOTICE: 'Thực đơn có thể thay đổi tùy theo tình hình cung ứng nguyên liệu.'
       }
     };
 
@@ -607,6 +620,9 @@
       document.getElementById('tab_dem').textContent = I18N[formState.lang].NIGHT;
       document.getElementById('empty_title').textContent = I18N[formState.lang].EMPTY_TITLE;
       document.getElementById('empty_desc').textContent = I18N[formState.lang].EMPTY_DESC;
+      document.getElementById('footer_notice').textContent = I18N[formState.lang].FOOTER_NOTICE;
+
+       updateLogo();
     }
 
     function setActiveCategoryButton(categoryValue) {
@@ -657,13 +673,15 @@
           showEmptyState(false);
           renderCards(rows);
         }
-        setStatus('캐시 표시 중');
+        //setStatus('C');
+        //setStatus('캐시 표시 중');
         // optionally revalidate in background
         if (!revalidate) return;
       } else {
         showEmptyState(false);
         renderSkeleton(10);
-        setStatus('조회 중...');
+        //setStatus('S');
+        //setStatus('조회 중...');
       }
 
       // 2) cancel previous request
@@ -778,6 +796,29 @@
       // initial load
       reload({ revalidate: true });
     })();
+
+
+    function updateLogo() {
+      const logo = document.getElementById('main_logo');
+      if (!logo) return;
+
+      logo.src = (formState.lang === 'vn')
+        ? 'assets/svg/logos/main_logo_vn.png'
+        : 'assets/svg/logos/main_logo_kr.png';
+    }
+
+    document.getElementById('btn_lang_kr').addEventListener('click', () => {
+      formState.lang = 'kr';
+      applyI18N();
+      reload({ revalidate: true });
+    });
+
+    document.getElementById('btn_lang_vn').addEventListener('click', () => {
+      formState.lang = 'vn';
+      applyI18N();
+      reload({ revalidate: true });
+    });
+
   </script>
 
 </body>
