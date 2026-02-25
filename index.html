@@ -221,6 +221,17 @@
       }
     }
 
+    @media (max-width: 576px) {
+      .navbar.m-2 {
+        margin: 0 !important;
+      }
+
+      .toolbar {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+    }
+
     #btn_lang_kr.active,
     #btn_lang_vn.active {
       border-color: var(--primary);
@@ -277,16 +288,17 @@
           </div>
 
           <!-- Right side: simple status -->
-          <div class="d-flex gap-2 align-items-center">
-            <button class="btn btn-light p-1 border" id="btn_lang_kr" aria-label="한국어">
-              <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" style="height:22px;">
-            </button>
+          <div class="d-flex align-items-center ms-auto">
+            <div class="btn-group btn-group-sm flex-nowrap" role="group" aria-label="Language switch">
+              <button type="button" class="btn btn-light border" id="btn_lang_kr">
+                <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" height="22">
+              </button>
+              <button type="button" class="btn btn-light border" id="btn_lang_vn">
+                <img src="assets/vendor/flag-icon-css/flags/4x3/vn.svg" alt="VN" height="22">
+              </button>
+            </div>
 
-            <button class="btn btn-light p-1 border" id="btn_lang_vn" aria-label="베트남어">
-              <img src="assets/vendor/flag-icon-css/flags/4x3/vn.svg" alt="VN" style="height:22px;">
-            </button>
-
-            <span class="small text-muted" id="status_text"></span>
+            <span class="small text-muted ms-2" id="status_text"></span>
           </div>
         </div>
       </div>
@@ -622,7 +634,7 @@
       document.getElementById('empty_desc').textContent = I18N[formState.lang].EMPTY_DESC;
       document.getElementById('footer_notice').textContent = I18N[formState.lang].FOOTER_NOTICE;
 
-       updateLogo();
+      updateLogo();
     }
 
     function setActiveCategoryButton(categoryValue) {
