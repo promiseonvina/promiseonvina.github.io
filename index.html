@@ -5,9 +5,10 @@
   <meta charset="utf-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no" />
-  <title>Promiseon Korean Menu (FAST)</title>
-  <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
-  <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
+  <title>Promiseon Vina Korean Menu</title>
+  <link rel="shortcut icon" href="assets/favicon/favicon.png" type="image/x-icon" />
+  <!--<link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />-->
+  <link rel="icon" type="image/png" href="assets/favicon/favicon.png">
   <meta name="theme-color" content="#ffffff" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -237,6 +238,25 @@
       border-color: var(--primary);
       background: #EFF6FF;
     }
+
+    .lang-flag {
+      height: 22px;
+      width: auto;
+    }
+
+    /* 모바일에서 자동 축소 */
+    @media (max-width: 480px) {
+      .lang-flag {
+        height: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #btn_lang_kr,
+      #btn_lang_vn {
+        padding: 0px 0px;
+      }
+    }
   </style>
   <!-----------------------------------------[ Head Section ]----------------------------------------->
   <!-- Google Analytics GA4 -->
@@ -289,12 +309,12 @@
 
           <!-- Right side: simple status -->
           <div class="d-flex align-items-center ms-auto">
-            <div class="btn-group btn-group-sm flex-nowrap" role="group" aria-label="Language switch">
-              <button type="button" class="btn btn-light border" id="btn_lang_kr">
-                <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" height="22">
+            <div class="input-group btn-group-sm flex-nowrap" role="group" aria-label="Language switch">
+              <button type="button" class="btn form-control border " id="btn_lang_kr">
+                <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" class="lang-flag">
               </button>
-              <button type="button" class="btn btn-light border" id="btn_lang_vn">
-                <img src="assets/vendor/flag-icon-css/flags/4x3/vn.svg" alt="VN" height="22">
+              <button type="button" class="btn  form-control border" id="btn_lang_vn">
+                <img src="assets/vendor/flag-icon-css/flags/4x3/vn.svg" alt="VN" class="lang-flag">
               </button>
             </div>
 
