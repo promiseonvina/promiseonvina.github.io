@@ -257,6 +257,45 @@
         padding: 0px 0px;
       }
     }
+
+    /* ---- Weekly menu modal table ---- */
+    .weekly-table th {
+      text-align: center;
+      vertical-align: middle;
+      background: #F3F4F6;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .weekly-table .cat-cell {
+      text-align: center;
+      vertical-align: middle;
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
+      background: #F9FAFB;
+    }
+
+    .weekly-table .menu-cell {
+      vertical-align: top;
+      font-size: 13px;
+      min-width: 110px;
+    }
+
+    .weekly-menu-items {
+      margin: 0;
+      padding-left: 16px;
+      line-height: 1.8;
+    }
+
+    .weekly-table .today-col {
+      background: #EFF6FF;
+    }
+
+    .weekly-table .today-col th {
+      background: #DBEAFE;
+      color: var(--primary);
+    }
   </style>
   <!-----------------------------------------[ Head Section ]----------------------------------------->
   <!-- Google Analytics GA4 -->
@@ -348,9 +387,18 @@
         </div>
       </div>
 
-      <!-- weekly lightbox holder (kept) -->
-      <div id="weeklyGallery" style="display:none">
-        <a id="weeklyPreview" data-fslightbox="weekly" href=""></a>
+      <!-- Weekly menu modal -->
+      <div class="modal fade" id="weeklyMenuModal" tabindex="-1" aria-labelledby="weeklyMenuModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold" id="weeklyMenuModalLabel"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="weekly-modal-body">
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Card template (DOM clone: fast) -->
@@ -364,8 +412,8 @@
                   <div class="meal-card__meta">
                     <span class="meal-chip js-applydate"></span>
                     <span class="meal-chip js-category"></span>
-                    <button class="btn btn-outline-primary btn-sm ms-1 js-week-download" type="button">
-                      <i class="bi bi-image"></i>
+                    <button class="btn btn-outline-primary btn-sm ms-1 js-week-download" type="button" title="주간 식단 보기">
+                      <i class="bi bi-calendar-week"></i>
                     </button>
                   </div>
                 </div>
@@ -406,11 +454,10 @@
     </main>
   </div>
 
-  <!-- JS: keep minimal (Bootstrap bundle + moment + fslightbox) -->
+  <!-- JS: Bootstrap bundle + moment -->
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/moment/min/moment.min.js"></script>
   <script src="assets/vendor/moment/min/locale/ko.min.js"></script>
-  <script src="assets/vendor/fslightbox/index.js"></script>
 
   <script>
     // ------------------------------------------------------------
@@ -632,10 +679,11 @@
           }
         }
 
-        // weekly download button payload
+        // weekly button payload
         const btn = node.querySelector('.js-week-download');
         btn.dataset.site = row.site_url || '';
         btn.dataset.date = row.apply_date || '';
+        btn.dataset.siteName = row.workplace_name || '';
 
         frag.appendChild(node);
       }
@@ -744,13 +792,77 @@
       }
     }
 
-    // ---- Weekly download (kept) ----
+    // ---- Weekly menu modal ----
+    const CATEGORY_ORDER = { '조식': 0, 'sáng': 0, '중식': 1, 'trưa': 1, '석식': 2, 'tối': 2, '야식': 3, 'đêm': 3 };
+    const DOW_KR = ['월', '화', '수', '목', '금', '토', '일'];
+    const DOW_VN = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+
+    function renderWeeklyTable(rows) {
+      const isVn = formState.lang === 'vn';
+      const today = moment().format('YYYY-MM-DD');
+
+      const dates = [...new Set(rows.map(r => r.apply_date))].sort();
+
+      const catKey = isVn ? 'category_name_v' : 'category_name_k';
+      const categories = [...new Set(rows.map(r => r[catKey] || ''))].filter(Boolean)
+        .sort((a, b) => (CATEGORY_ORDER[a] ?? 99) - (CATEGORY_ORDER[b] ?? 99));
+
+      const lookup = new Map();
+      for (const r of rows) {
+        lookup.set(`${r.apply_date}|${r[catKey]}`, r);
+      }
+
+      const DOW = isVn ? DOW_VN : DOW_KR;
+
+      let html = '<div class="table-responsive"><table class="table table-bordered table-sm weekly-table mb-2">';
+
+      // header
+      html += '<thead><tr><th style="min-width:52px"></th>';
+      for (const d of dates) {
+        const dm = moment(d, 'YYYY-MM-DD');
+        const dow = DOW[dm.isoWeekday() - 1];
+        const isToday = d === today;
+        html += `<th class="${isToday ? 'today-col' : ''}">${dow}<br><small class="fw-normal">${dm.format('MM/DD')}</small></th>`;
+      }
+      html += '</tr></thead>';
+
+      // body
+      html += '<tbody>';
+      for (const cat of categories) {
+        html += `<tr><td class="cat-cell">${cat}</td>`;
+        for (const d of dates) {
+          const isToday = d === today;
+          const row = lookup.get(`${d}|${cat}`);
+          html += `<td class="menu-cell${isToday ? ' today-col' : ''}">`;
+          if (row) {
+            const items = [1, 2, 3, 4, 5, 6, 7]
+              .map(i => isVn ? row[`menu_name_v_${i}`] : row[`menu_name_k_${i}`])
+              .filter(v => v && String(v).trim());
+            if (items.length) {
+              html += '<ul class="weekly-menu-items">' + items.map(m => `<li>${m}</li>`).join('') + '</ul>';
+            } else {
+              html += '<span class="text-muted">-</span>';
+            }
+          } else {
+            html += '<span class="text-muted">-</span>';
+          }
+          html += '</td>';
+        }
+        html += '</tr>';
+      }
+      html += '</tbody></table></div>';
+      html += `<p class="text-muted small mb-0">${I18N[formState.lang].FOOTER_NOTICE}</p>`;
+
+      document.getElementById('weekly-modal-body').innerHTML = html;
+    }
+
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('.js-week-download');
       if (!btn) return;
 
       const site = btn.dataset.site;
       const date = btn.dataset.date;
+      const siteName = btn.dataset.siteName || '';
 
       if (!site || !date) {
         toast('사업장 또는 날짜 정보가 없습니다.');
@@ -759,23 +871,33 @@
 
       const m = moment(date, 'YYYY-MM-DD');
       const year = m.isoWeekYear();
-      const week = String(m.isoWeek()).padStart(2, '');
+      const week = String(m.isoWeek()).padStart(2, '0');
 
-      const checkUrl = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/exists/${year}/${site}/${week}?t=${Date.now()}`;
+      document.getElementById('weeklyMenuModalLabel').textContent =
+        `${siteName} — ${year}년 ${week}주차 식단`;
+      document.getElementById('weekly-modal-body').innerHTML =
+        '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted small">불러오는 중...</div></div>';
 
-      fetch(checkUrl)
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('weeklyMenuModal'));
+      modal.show();
+
+      const url = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/data/${year}/${site}/${week}?t=${Date.now()}`;
+
+      fetch(url, { headers: { 'X-API-KEY': API_KEY } })
         .then(r => r.json())
         .then(res => {
-          if (!res || res.success !== true) {
-            toast((res && res.message) || '등록된 주간 식단이 없습니다.');
+          const rows = normalizeRows(res);
+          if (!rows.length) {
+            document.getElementById('weekly-modal-body').innerHTML =
+              '<div class="text-center py-4 text-muted">등록된 주간 식단이 없습니다.</div>';
             return;
           }
-          const img = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/${year}/${site}/${week}?t=${Date.now()}`;
-          document.getElementById('weeklyPreview').setAttribute('href', img);
-          refreshFsLightbox();
-          document.getElementById('weeklyPreview').click();
+          renderWeeklyTable(rows);
         })
-        .catch(() => toast('주간 식단 정보를 불러오지 못했습니다.'));
+        .catch(() => {
+          document.getElementById('weekly-modal-body').innerHTML =
+            '<div class="text-center py-4 text-danger">데이터를 불러오지 못했습니다.</div>';
+        });
     });
 
     // ---- Event wiring ----
