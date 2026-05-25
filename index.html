@@ -6,13 +6,16 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no" />
   <title>Promiseon Vina Korean Menu</title>
+
+  <!-- Favicon -->
   <link rel="shortcut icon" href="assets/favicon/favicon.png" type="image/x-icon" />
   <!--<link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />-->
   <link rel="icon" type="image/png" href="assets/favicon/favicon.png">
+
   <meta name="theme-color" content="#ffffff" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- CSS: Bootstrap only (keep UI familiar, reduce JS plugins) -->
+  <!-- CSS: Bootstrap + Icons -->
   <link rel="stylesheet" href="assets/vendor/bootstrap/dist/css/bootstrap.min.css" />
   <link href="assets/vendor/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 
@@ -22,6 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet" />
 
   <style>
+    /* ===== Design Tokens ===== */
     :root {
       --bg: #F9FAFB;
       --card: #fff;
@@ -34,12 +38,14 @@
       --radius: 14px;
     }
 
+    /* ===== Base ===== */
     body {
       font-family: "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
     }
 
+    /* ===== Sticky Header & Toolbar ===== */
     .header-sticky {
       position: sticky;
       top: 0;
@@ -57,6 +63,7 @@
       flex-wrap: wrap;
     }
 
+    /* ===== Category Tabs ===== */
     .tabs {
       display: flex;
       gap: 8px;
@@ -80,6 +87,7 @@
       font-weight: 700;
     }
 
+    /* ===== Meal Cards ===== */
     .meal-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -121,6 +129,7 @@
       margin-bottom: 6px;
     }
 
+    /* 메인 메뉴는 빨간 왼쪽 테두리로 강조 */
     .meal-card__primary {
       font-size: 15px;
       font-weight: 800;
@@ -139,6 +148,7 @@
       padding-left: 18px;
     }
 
+    /* ===== Skeleton Loading ===== */
     .skeleton {
       background: linear-gradient(90deg, #f2f2f2 25%, #eaeaea 37%, #f2f2f2 63%);
       background-size: 400% 100%;
@@ -190,10 +200,11 @@
       width: 95%;
     }
 
+    /* ===== Toolbar Layout (Responsive) ===== */
+
     /* 1) 기본: 왼쪽부터 붙여 배치 */
     .toolbar {
       justify-content: flex-start;
-      /* space-between 제거 효과 */
     }
 
     /* 2) 상태 영역은 오른쪽 끝으로 밀기 */
@@ -218,7 +229,6 @@
         width: 100%;
         margin-top: 10px;
         order: 3;
-        /* 아래로 */
       }
     }
 
@@ -233,6 +243,7 @@
       }
     }
 
+    /* ===== Language Toggle ===== */
     #btn_lang_kr.active,
     #btn_lang_vn.active {
       border-color: var(--primary);
@@ -244,21 +255,18 @@
       width: auto;
     }
 
-    /* 모바일에서 자동 축소 */
     @media (max-width: 480px) {
       .lang-flag {
         height: 20px;
       }
-    }
 
-    @media (max-width: 480px) {
       #btn_lang_kr,
       #btn_lang_vn {
         padding: 0px 0px;
       }
     }
 
-    /* ---- Weekly menu modal table ---- */
+    /* ===== Weekly Menu Modal Table ===== */
     .weekly-table th {
       text-align: center;
       vertical-align: middle;
@@ -297,76 +305,86 @@
       color: var(--primary);
     }
   </style>
-  <!-----------------------------------------[ Head Section ]----------------------------------------->
+
   <!-- Google Analytics GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYSE9D9KBE"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-
     gtag('config', 'G-SYSE9D9KBE');
   </script>
 
 </head>
 
 <body>
+
+  <!-- ===== Sticky Header ===== -->
   <div class="header-sticky">
     <header class="navbar navbar-expand-lg navbar-bordered bg-white m-2">
       <div class="container-fluid">
+        <!-- 언어 상태에 따라 JS로 src 교체 (updateLogo) -->
         <img id="main_logo" class="mb-1" src="assets/svg/logos/main_logo_kr.png" alt="Logo" style="height: 100px;">
       </div>
     </header>
 
-    <!-- toast container (bootstrap) -->
+    <!-- Toast 알림 컨테이너 (Bootstrap Toast, JS로 동적 생성) -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>
 
     <main class="main">
+
+      <!-- ===== Toolbar: 날짜 선택 / 카테고리 탭 / 언어 전환 ===== -->
       <div class="">
         <div class="toolbar">
-          <!-- Date (native input=date: fastest) -->
+
+          <!-- 날짜 입력 + 이전/다음/검색 버튼 -->
           <div class="d-flex gap-2 align-items-center" style="min-width: 280px;">
             <div class="input-group">
               <input type="date" class="form-control" id="start_date" />
-              <button type="button" class="btn btn-secondary" id="bt_date_subtract" aria-label="previous day"><i
-                  class="bi bi-caret-left"></i></button>
-              <button type="button" class="btn btn-secondary" id="bt_date_add" aria-label="next day"><i
-                  class="bi bi-caret-right"></i></button>
-              <button class="btn btn-primary" id="bt_search" type="button" aria-label="search"><i
-                  class="bi bi-search"></i></button>
+              <button type="button" class="btn btn-secondary" id="bt_date_subtract" aria-label="previous day">
+                <i class="bi bi-caret-left"></i>
+              </button>
+              <button type="button" class="btn btn-secondary" id="bt_date_add" aria-label="next day">
+                <i class="bi bi-caret-right"></i>
+              </button>
+              <button class="btn btn-primary" id="bt_search" type="button" aria-label="search">
+                <i class="bi bi-search"></i>
+              </button>
             </div>
           </div>
 
-          <!-- Category tabs -->
+          <!-- 식사 카테고리 탭 (data-category 값이 API categoryId와 매핑) -->
           <div class="tabs" role="tablist" aria-label="메뉴 카테고리">
             <button type="button" class="tab-btn active js-category" data-category="0" id="tab_all"></button>
-            <button type="button" class="tab-btn js-category" data-category="2" id="tab_sang"></button>
-            <button type="button" class="tab-btn js-category" data-category="3" id="tab_trua"></button>
-            <button type="button" class="tab-btn js-category" data-category="4" id="tab_chieu"></button>
-            <button type="button" class="tab-btn js-category" data-category="5" id="tab_dem"></button>
+            <button type="button" class="tab-btn js-category" data-category="2" id="tab_sang"></button>   <!-- 조식 -->
+            <button type="button" class="tab-btn js-category" data-category="3" id="tab_trua"></button>   <!-- 중식 -->
+            <button type="button" class="tab-btn js-category" data-category="4" id="tab_chieu"></button>  <!-- 석식 -->
+            <button type="button" class="tab-btn js-category" data-category="5" id="tab_dem"></button>    <!-- 야식 -->
           </div>
 
-          <!-- Right side: simple status -->
+          <!-- 언어 전환 버튼 + 상태 텍스트 -->
           <div class="d-flex align-items-center ms-auto">
             <div class="input-group btn-group-sm flex-nowrap" role="group" aria-label="Language switch">
-              <button type="button" class="btn form-control border " id="btn_lang_kr">
+              <button type="button" class="btn form-control border" id="btn_lang_kr">
                 <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" class="lang-flag">
               </button>
-              <button type="button" class="btn  form-control border" id="btn_lang_vn">
+              <button type="button" class="btn form-control border" id="btn_lang_vn">
                 <img src="assets/vendor/flag-icon-css/flags/4x3/vn.svg" alt="VN" class="lang-flag">
               </button>
             </div>
-
             <span class="small text-muted ms-2" id="status_text"></span>
           </div>
+
         </div>
       </div>
 
+      <!-- ===== Main Content ===== -->
       <div class="container-fluid">
-        <!-- Cards -->
+
+        <!-- 메뉴 카드 목록 (JS에서 cardTemplate 복제 후 주입) -->
         <div class="row" id="menu-card-container"></div>
 
-        <!-- Empty state -->
+        <!-- 조회 결과 없음 상태 (데이터 없을 때 표시) -->
         <div class="row" id="menu-empty-state" style="display:none;">
           <div class="col-12">
             <div class="meal-card p-4 text-center">
@@ -379,6 +397,7 @@
           </div>
         </div>
 
+        <!-- Footer -->
         <div class="mt-0 text-center">
           <hr>
           <span class="small text-muted" id="footer_notice"></span>
@@ -387,7 +406,7 @@
         </div>
       </div>
 
-      <!-- Weekly menu modal -->
+      <!-- ===== Weekly Menu Modal ===== -->
       <div class="modal fade" id="weeklyMenuModal" tabindex="-1" aria-labelledby="weeklyMenuModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
           <div class="modal-content">
@@ -395,13 +414,13 @@
               <h5 class="modal-title fw-bold" id="weeklyMenuModalLabel"></h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="weekly-modal-body">
-            </div>
+            <!-- JS의 renderWeeklyTable()이 이 영역에 테이블을 삽입 -->
+            <div class="modal-body" id="weekly-modal-body"></div>
           </div>
         </div>
       </div>
 
-      <!-- Card template (DOM clone: fast) -->
+      <!-- ===== Card Template (DOM clone 방식: innerHTML보다 빠름) ===== -->
       <template id="cardTemplate">
         <div class="col-12 col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-3 g-2">
           <div class="card meal-card h-100 shadow-sm">
@@ -435,7 +454,7 @@
         </div>
       </template>
 
-      <!-- Skeleton template -->
+      <!-- ===== Skeleton Template (데이터 로딩 중 플레이스홀더) ===== -->
       <template id="skeletonTemplate">
         <div class="col-12 col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-3 g-2">
           <div class="sk-card">
@@ -454,23 +473,27 @@
     </main>
   </div>
 
-  <!-- JS: Bootstrap bundle + moment -->
+  <!-- ===== Vendor Scripts ===== -->
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/moment/min/moment.min.js"></script>
   <script src="assets/vendor/moment/min/locale/ko.min.js"></script>
 
   <script>
-    // ------------------------------------------------------------
-    // FAST Architecture Notes:
-    // - No bootstrap-table: card-only rendering
-    // - DOM cloning via <template> + DocumentFragment
-    // - Cache: memory Map with TTL + SWR (show cache instantly, refresh in bg)
-    // - AbortController cancels in-flight requests on rapid interactions
-    // ------------------------------------------------------------
+    // ============================================================
+    // Architecture:
+    //   - 카드 렌더링만 사용 (bootstrap-table 미사용)
+    //   - <template> DOM 복제 + DocumentFragment로 reflow 최소화
+    //   - 캐시: Map(key → {ts, data}), TTL 2분 + SWR 패턴
+    //   - AbortController로 빠른 연속 요청 시 이전 요청 취소
+    // ============================================================
 
+
+    // ===== Constants =====
     const API_BASE = 'https://pvbi.ddns.net/api/korean-menu';
     const API_KEY = 'l0vLjDuIxAAUjHd7';
 
+
+    // ===== App State =====
     const formState = {
       lang: 'kr',
       searchDate: '',
@@ -478,6 +501,8 @@
       searchCategory: '0'
     };
 
+
+    // ===== I18N (한국어 / 베트남어) =====
     const I18N = {
       kr: {
         TITLE_MAIN: '메인 메뉴',
@@ -507,6 +532,9 @@
       }
     };
 
+
+    // ===== Utilities =====
+
     function getQueryParam(key) {
       const params = new URLSearchParams(window.location.search);
       return params.get(key);
@@ -517,7 +545,9 @@
       if (el) el.textContent = text || '';
     }
 
-    // ---- Toast (Bootstrap) ----
+
+    // ===== Toast (Bootstrap) =====
+
     function toast(message) {
       const container = document.querySelector('.toast-container');
       if (!container) return;
@@ -547,9 +577,11 @@
       setTimeout(() => toastEl.remove(), 3500);
     }
 
-    // ---- Cache (TTL + SWR) ----
-    const menuCache = new Map(); // key -> {ts, data}
-    const CACHE_TTL_MS = 2 * 60 * 1000; // 2 min (adjust as needed)
+
+    // ===== Cache (TTL + SWR) =====
+    // 같은 조건으로 재조회 시 캐시를 먼저 보여주고 백그라운드에서 갱신
+    const menuCache = new Map(); // key → {ts, data}
+    const CACHE_TTL_MS = 2 * 60 * 1000; // 2분
 
     function cacheKey(date, site, category, lang) {
       return `${date}|${site}|${category}|${lang}`;
@@ -558,7 +590,7 @@
     function cacheGet(key) {
       const v = menuCache.get(key);
       if (!v) return null;
-      if ((Date.now() - v.ts) > CACHE_TTL_MS) return null;
+      if ((Date.now() - v.ts) > CACHE_TTL_MS) return null; // TTL 만료
       return v.data;
     }
 
@@ -566,9 +598,11 @@
       menuCache.set(key, { ts: Date.now(), data });
     }
 
-    // ---- Request control (abort + dedupe) ----
+
+    // ===== API Fetch (AbortController + 중복 요청 제거) =====
+    // 동일한 키로 동시에 여러 요청이 오면 하나만 실제 fetch하고 나머지는 같은 Promise를 공유
     let currentAbort = null;
-    const inflight = new Map(); // key -> Promise
+    const inflight = new Map(); // key → Promise
 
     async function fetchMenu({ date, site, category, lang }, { signal } = {}) {
       const url = new URL(API_BASE);
@@ -586,11 +620,8 @@
           signal
         });
 
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        const json = await res.json();
-        return json;
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
       })();
 
       inflight.set(key, p);
@@ -603,7 +634,9 @@
       }
     }
 
-    // ---- Rendering (template clone + fragment) ----
+
+    // ===== Rendering =====
+
     function showEmptyState(show) {
       document.getElementById('menu-empty-state').style.display = show ? '' : 'none';
       document.getElementById('menu-card-container').style.display = show ? 'none' : '';
@@ -620,6 +653,7 @@
       container.appendChild(frag);
     }
 
+    // API 응답 형태가 배열/rows/data 등으로 올 수 있어 정규화
     function normalizeRows(res) {
       if (Array.isArray(res)) return res;
       if (res && Array.isArray(res.rows)) return res.rows;
@@ -633,6 +667,7 @@
       return m.format('MM/DD') + ' (' + dow + ')';
     }
 
+    // 언어에 따라 menu_name_k_N 또는 menu_name_v_N 필드 선택
     function menuValue(row, idx) {
       const isVn = formState.lang === 'vn';
       const k = isVn ? `menu_name_v_${idx}` : `menu_name_k_${idx}`;
@@ -659,6 +694,7 @@
         node.querySelector('.js-title-main').textContent = I18N[formState.lang].TITLE_MAIN;
         node.querySelector('.js-title-menu').textContent = I18N[formState.lang].TITLE_MENU;
 
+        // idx 3 = 메인 메뉴, 1·2·4~7 = 부메뉴
         const main = menuValue(row, 3);
         node.querySelector('.js-main-menu').textContent = main || '';
 
@@ -679,7 +715,7 @@
           }
         }
 
-        // weekly button payload
+        // 주간 식단 버튼에 사업장·날짜 정보를 data 속성으로 저장 (클릭 핸들러에서 읽음)
         const btn = node.querySelector('.js-week-download');
         btn.dataset.site = row.site_url || '';
         btn.dataset.date = row.apply_date || '';
@@ -691,15 +727,17 @@
       container.appendChild(frag);
     }
 
-    // ---- UI State ----
+
+    // ===== UI State =====
+
     function applyI18N() {
-      document.getElementById('tab_all').textContent = I18N[formState.lang].ALL;
-      document.getElementById('tab_sang').textContent = I18N[formState.lang].BREAKFAST;
-      document.getElementById('tab_trua').textContent = I18N[formState.lang].LUNCH;
-      document.getElementById('tab_chieu').textContent = I18N[formState.lang].DINNER;
-      document.getElementById('tab_dem').textContent = I18N[formState.lang].NIGHT;
-      document.getElementById('empty_title').textContent = I18N[formState.lang].EMPTY_TITLE;
-      document.getElementById('empty_desc').textContent = I18N[formState.lang].EMPTY_DESC;
+      document.getElementById('tab_all').textContent    = I18N[formState.lang].ALL;
+      document.getElementById('tab_sang').textContent   = I18N[formState.lang].BREAKFAST;
+      document.getElementById('tab_trua').textContent   = I18N[formState.lang].LUNCH;
+      document.getElementById('tab_chieu').textContent  = I18N[formState.lang].DINNER;
+      document.getElementById('tab_dem').textContent    = I18N[formState.lang].NIGHT;
+      document.getElementById('empty_title').textContent  = I18N[formState.lang].EMPTY_TITLE;
+      document.getElementById('empty_desc').textContent   = I18N[formState.lang].EMPTY_DESC;
       document.getElementById('footer_notice').textContent = I18N[formState.lang].FOOTER_NOTICE;
 
       updateLogo();
@@ -710,20 +748,23 @@
       buttons.forEach(b => b.classList.toggle('active', String(b.dataset.category) === String(categoryValue)));
     }
 
-    // ---- Category auto-select (kept) ----
+
+    // ===== Category 자동 선택 (시간 기반) =====
+    // 사용자가 수동으로 탭을 누른 경우엔 자동 선택을 덮어쓰지 않음
     let manualCategoryOverride = false;
     let lastAutoSelectDate = moment().format('YYYY-MM-DD');
 
     function getCategoryByNow(now = moment()) {
       const h = now.hour();
-      if (h >= 5 && h <= 9) return '2';
-      if (h >= 10 && h <= 14) return '3';
-      if (h >= 15 && h <= 19) return '4';
-      return '5';
+      if (h >= 5  && h <= 9)  return '2'; // 조식
+      if (h >= 10 && h <= 14) return '3'; // 중식
+      if (h >= 15 && h <= 19) return '4'; // 석식
+      return '5';                          // 야식
     }
 
     function autoSelectCategoryByTime() {
       const today = moment().format('YYYY-MM-DD');
+      // 날짜가 바뀌면 수동 선택 플래그 초기화
       if (lastAutoSelectDate !== today) {
         manualCategoryOverride = false;
         lastAutoSelectDate = today;
@@ -734,16 +775,17 @@
       setActiveCategoryButton(cat);
     }
 
-    // ---- Reload (SWR: cache-first, then revalidate) ----
+
+    // ===== Reload (SWR: 캐시 즉시 표시 → 백그라운드 갱신) =====
     async function reload({ revalidate = true } = {}) {
-      const date = document.getElementById('start_date').value || moment().format('YYYY-MM-DD');
-      const site = formState.searchSite;
+      const date     = document.getElementById('start_date').value || moment().format('YYYY-MM-DD');
+      const site     = formState.searchSite;
       const category = formState.searchCategory;
-      const lang = formState.lang;
+      const lang     = formState.lang;
 
       const key = cacheKey(date, site, category, lang);
 
-      // 1) show cache immediately (if available)
+      // 1) 캐시가 있으면 즉시 렌더링 (사용자 체감 속도 향상)
       const cached = cacheGet(key);
       if (cached) {
         const rows = normalizeRows(cached);
@@ -753,18 +795,14 @@
           showEmptyState(false);
           renderCards(rows);
         }
-        //setStatus('C');
-        //setStatus('캐시 표시 중');
-        // optionally revalidate in background
         if (!revalidate) return;
+        // revalidate = true이면 캐시 표시 후 백그라운드에서 최신 데이터 fetch
       } else {
         showEmptyState(false);
         renderSkeleton(10);
-        //setStatus('S');
-        //setStatus('조회 중...');
       }
 
-      // 2) cancel previous request
+      // 2) 이전 진행 중인 요청 취소 (빠른 날짜 변경 시 race condition 방지)
       if (currentAbort) currentAbort.abort();
       currentAbort = new AbortController();
 
@@ -777,36 +815,37 @@
           showEmptyState(true);
         } else {
           showEmptyState(false);
-          // Defer heavy DOM work to keep UI responsive on low-end devices
+          // 저사양 기기 대응: idle 시점에 DOM 작업 수행
           const doRender = () => renderCards(rows);
           if ('requestIdleCallback' in window) requestIdleCallback(doRender, { timeout: 300 });
           else setTimeout(doRender, 0);
         }
         setStatus('');
       } catch (e) {
-        if (e && e.name === 'AbortError') return; // expected on rapid UI changes
+        if (e && e.name === 'AbortError') return; // 의도적 취소, 정상
         showEmptyState(true);
         setStatus('');
         toast('데이터 조회에 실패했습니다. 네트워크 상태를 확인해주세요.');
-        // console.error(e);
       }
     }
 
-    // ---- Weekly menu modal ----
+
+    // ===== Weekly Menu Modal =====
+    // 카테고리 표시 순서 고정 (조식→중식→석식→야식)
     const CATEGORY_ORDER = { '조식': 0, 'sáng': 0, '중식': 1, 'trưa': 1, '석식': 2, 'tối': 2, '야식': 3, 'đêm': 3 };
     const DOW_KR = ['월', '화', '수', '목', '금', '토', '일'];
     const DOW_VN = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
     function renderWeeklyTable(rows) {
-      const isVn = formState.lang === 'vn';
+      const isVn  = formState.lang === 'vn';
       const today = moment().format('YYYY-MM-DD');
 
-      const dates = [...new Set(rows.map(r => r.apply_date))].sort();
-
-      const catKey = isVn ? 'category_name_v' : 'category_name_k';
+      const dates      = [...new Set(rows.map(r => r.apply_date))].sort();
+      const catKey     = isVn ? 'category_name_v' : 'category_name_k';
       const categories = [...new Set(rows.map(r => r[catKey] || ''))].filter(Boolean)
         .sort((a, b) => (CATEGORY_ORDER[a] ?? 99) - (CATEGORY_ORDER[b] ?? 99));
 
+      // (날짜|카테고리) → row 로 O(1) 조회
       const lookup = new Map();
       for (const r of rows) {
         lookup.set(`${r.apply_date}|${r[catKey]}`, r);
@@ -816,33 +855,31 @@
 
       let html = '<div class="table-responsive"><table class="table table-bordered table-sm weekly-table mb-2">';
 
-      // header
+      // 헤더: 날짜별 열
       html += '<thead><tr><th style="min-width:52px"></th>';
       for (const d of dates) {
-        const dm = moment(d, 'YYYY-MM-DD');
-        const dow = DOW[dm.isoWeekday() - 1];
+        const dm     = moment(d, 'YYYY-MM-DD');
+        const dow    = DOW[dm.isoWeekday() - 1];
         const isToday = d === today;
         html += `<th class="${isToday ? 'today-col' : ''}">${dow}<br><small class="fw-normal">${dm.format('MM/DD')}</small></th>`;
       }
       html += '</tr></thead>';
 
-      // body
+      // 바디: 카테고리별 행
       html += '<tbody>';
       for (const cat of categories) {
         html += `<tr><td class="cat-cell">${cat}</td>`;
         for (const d of dates) {
           const isToday = d === today;
-          const row = lookup.get(`${d}|${cat}`);
+          const row     = lookup.get(`${d}|${cat}`);
           html += `<td class="menu-cell${isToday ? ' today-col' : ''}">`;
           if (row) {
             const items = [1, 2, 3, 4, 5, 6, 7]
               .map(i => isVn ? row[`menu_name_v_${i}`] : row[`menu_name_k_${i}`])
               .filter(v => v && String(v).trim());
-            if (items.length) {
-              html += '<ul class="weekly-menu-items">' + items.map(m => `<li>${m}</li>`).join('') + '</ul>';
-            } else {
-              html += '<span class="text-muted">-</span>';
-            }
+            html += items.length
+              ? '<ul class="weekly-menu-items">' + items.map(m => `<li>${m}</li>`).join('') + '</ul>'
+              : '<span class="text-muted">-</span>';
           } else {
             html += '<span class="text-muted">-</span>';
           }
@@ -856,12 +893,13 @@
       document.getElementById('weekly-modal-body').innerHTML = html;
     }
 
+    // 주간 식단 버튼 클릭 → 모달 열기 + 데이터 fetch
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('.js-week-download');
       if (!btn) return;
 
-      const site = btn.dataset.site;
-      const date = btn.dataset.date;
+      const site     = btn.dataset.site;
+      const date     = btn.dataset.date;
       const siteName = btn.dataset.siteName || '';
 
       if (!site || !date) {
@@ -869,16 +907,22 @@
         return;
       }
 
-      const m = moment(date, 'YYYY-MM-DD');
+      const m    = moment(date, 'YYYY-MM-DD');
       const year = m.isoWeekYear();
       const week = String(m.isoWeek()).padStart(2, '0');
 
       document.getElementById('weeklyMenuModalLabel').textContent =
         `${siteName} — ${year}년 ${week}주차 식단`;
+
+      // 로딩 스피너 표시 후 모달 오픈
       document.getElementById('weekly-modal-body').innerHTML =
         '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted small">불러오는 중...</div></div>';
 
-      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('weeklyMenuModal'));
+      const modalEl = document.getElementById('weeklyMenuModal');
+      const modal   = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modalEl.addEventListener('shown.bs.modal', () => {
+        modalEl.querySelector('.btn-close').focus();
+      }, { once: true });
       modal.show();
 
       const url = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/data/${year}/${site}/${week}?t=${Date.now()}`;
@@ -900,17 +944,19 @@
         });
     });
 
-    // ---- Event wiring ----
+
+    // ===== Event Wiring =====
+
     function addDaysToInputDate(deltaDays) {
-      const input = document.getElementById('start_date');
+      const input   = document.getElementById('start_date');
       const current = input.value ? moment(input.value, 'YYYY-MM-DD') : moment();
-      input.value = current.add(deltaDays, 'days').format('YYYY-MM-DD');
+      input.value   = current.add(deltaDays, 'days').format('YYYY-MM-DD');
     }
 
     document.getElementById('bt_date_subtract').addEventListener('click', () => { addDaysToInputDate(-1); reload(); });
-    document.getElementById('bt_date_add').addEventListener('click', () => { addDaysToInputDate(1); reload(); });
-    document.getElementById('bt_search').addEventListener('click', () => reload({ revalidate: true }));
-    document.getElementById('start_date').addEventListener('change', () => reload({ revalidate: true }));
+    document.getElementById('bt_date_add').addEventListener('click',      () => { addDaysToInputDate(1);  reload(); });
+    document.getElementById('bt_search').addEventListener('click',        () => reload({ revalidate: true }));
+    document.getElementById('start_date').addEventListener('change',      () => reload({ revalidate: true }));
 
     document.querySelectorAll('.js-category').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -927,40 +973,7 @@
       });
     });
 
-    // ---- Init ----
-    (function init() {
-      const urlLang = getQueryParam('lang');
-      if (urlLang === 'kr' || urlLang === 'vn') formState.lang = urlLang;
-
-      const siteParam = getQueryParam('site');
-      if (siteParam) formState.searchSite = String(siteParam);
-
-      const dateParam = getQueryParam('date');
-      const input = document.getElementById('start_date');
-      input.value = dateParam ? String(dateParam) : moment().format('YYYY-MM-DD');
-
-      applyI18N();
-
-      autoSelectCategoryByTime();
-      setActiveCategoryButton(formState.searchCategory);
-
-      // periodic auto-select (same logic as original; low overhead)
-      setInterval(() => { autoSelectCategoryByTime(); setActiveCategoryButton(formState.searchCategory); }, 5 * 60 * 1000);
-
-      // initial load
-      reload({ revalidate: true });
-    })();
-
-
-    function updateLogo() {
-      const logo = document.getElementById('main_logo');
-      if (!logo) return;
-
-      logo.src = (formState.lang === 'vn')
-        ? 'assets/svg/logos/main_logo_vn.png'
-        : 'assets/svg/logos/main_logo_kr.png';
-    }
-
+    // 언어 전환
     document.getElementById('btn_lang_kr').addEventListener('click', () => {
       formState.lang = 'kr';
       applyI18N();
@@ -972,6 +985,44 @@
       applyI18N();
       reload({ revalidate: true });
     });
+
+
+    // ===== Logo =====
+
+    function updateLogo() {
+      const logo = document.getElementById('main_logo');
+      if (!logo) return;
+      logo.src = (formState.lang === 'vn')
+        ? 'assets/svg/logos/main_logo_vn.png'
+        : 'assets/svg/logos/main_logo_kr.png';
+    }
+
+
+    // ===== Init =====
+    (function init() {
+      // URL 파라미터로 초기 언어·사업장·날짜 설정
+      const urlLang = getQueryParam('lang');
+      if (urlLang === 'kr' || urlLang === 'vn') formState.lang = urlLang;
+
+      const siteParam = getQueryParam('site');
+      if (siteParam) formState.searchSite = String(siteParam);
+
+      const dateParam = getQueryParam('date');
+      const input = document.getElementById('start_date');
+      input.value = dateParam ? String(dateParam) : moment().format('YYYY-MM-DD');
+
+      applyI18N();
+      autoSelectCategoryByTime();
+      setActiveCategoryButton(formState.searchCategory);
+
+      // 5분마다 시간 기반 카테고리 재확인 (자정 넘김 대응)
+      setInterval(() => {
+        autoSelectCategoryByTime();
+        setActiveCategoryButton(formState.searchCategory);
+      }, 5 * 60 * 1000);
+
+      reload({ revalidate: true });
+    })();
 
   </script>
 
