@@ -294,6 +294,7 @@
       margin: 0;
       padding-left: 16px;
       line-height: 1.8;
+      list-style: none;
     }
 
     .weekly-table .today-col {
@@ -356,10 +357,10 @@
           <!-- 식사 카테고리 탭 (data-category 값이 API categoryId와 매핑) -->
           <div class="tabs" role="tablist" aria-label="메뉴 카테고리">
             <button type="button" class="tab-btn active js-category" data-category="0" id="tab_all"></button>
-            <button type="button" class="tab-btn js-category" data-category="2" id="tab_sang"></button>   <!-- 조식 -->
-            <button type="button" class="tab-btn js-category" data-category="3" id="tab_trua"></button>   <!-- 중식 -->
-            <button type="button" class="tab-btn js-category" data-category="4" id="tab_chieu"></button>  <!-- 석식 -->
-            <button type="button" class="tab-btn js-category" data-category="5" id="tab_dem"></button>    <!-- 야식 -->
+            <button type="button" class="tab-btn js-category" data-category="2" id="tab_sang"></button> <!-- 조식 -->
+            <button type="button" class="tab-btn js-category" data-category="3" id="tab_trua"></button> <!-- 중식 -->
+            <button type="button" class="tab-btn js-category" data-category="4" id="tab_chieu"></button> <!-- 석식 -->
+            <button type="button" class="tab-btn js-category" data-category="5" id="tab_dem"></button> <!-- 야식 -->
           </div>
 
           <!-- 언어 전환 버튼 + 상태 텍스트 -->
@@ -403,20 +404,6 @@
           <span class="small text-muted" id="footer_notice"></span>
           <br>
           <img src="assets/svg/logos/logo.png" alt="Logo" class="mt-1 mb-3 center" style="height: 30px; width: auto;">
-        </div>
-      </div>
-
-      <!-- ===== Weekly Menu Modal ===== -->
-      <div class="modal fade" id="weeklyMenuModal" tabindex="-1" aria-labelledby="weeklyMenuModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title fw-bold" id="weeklyMenuModalLabel"></h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <!-- JS의 renderWeeklyTable()이 이 영역에 테이블을 삽입 -->
-            <div class="modal-body" id="weekly-modal-body"></div>
-          </div>
         </div>
       </div>
 
@@ -470,8 +457,24 @@
         </div>
       </template>
 
+
+
     </main>
   </div>
+
+  <!-- ===== Weekly Menu Modal (Body 직하에 배치) ===== -->
+  <div class="modal fade" id="weeklyMenuModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="weeklyMenuModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="weekly-modal-body"></div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ===== Vendor Scripts ===== -->
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -731,13 +734,13 @@
     // ===== UI State =====
 
     function applyI18N() {
-      document.getElementById('tab_all').textContent    = I18N[formState.lang].ALL;
-      document.getElementById('tab_sang').textContent   = I18N[formState.lang].BREAKFAST;
-      document.getElementById('tab_trua').textContent   = I18N[formState.lang].LUNCH;
-      document.getElementById('tab_chieu').textContent  = I18N[formState.lang].DINNER;
-      document.getElementById('tab_dem').textContent    = I18N[formState.lang].NIGHT;
-      document.getElementById('empty_title').textContent  = I18N[formState.lang].EMPTY_TITLE;
-      document.getElementById('empty_desc').textContent   = I18N[formState.lang].EMPTY_DESC;
+      document.getElementById('tab_all').textContent = I18N[formState.lang].ALL;
+      document.getElementById('tab_sang').textContent = I18N[formState.lang].BREAKFAST;
+      document.getElementById('tab_trua').textContent = I18N[formState.lang].LUNCH;
+      document.getElementById('tab_chieu').textContent = I18N[formState.lang].DINNER;
+      document.getElementById('tab_dem').textContent = I18N[formState.lang].NIGHT;
+      document.getElementById('empty_title').textContent = I18N[formState.lang].EMPTY_TITLE;
+      document.getElementById('empty_desc').textContent = I18N[formState.lang].EMPTY_DESC;
       document.getElementById('footer_notice').textContent = I18N[formState.lang].FOOTER_NOTICE;
 
       updateLogo();
@@ -756,7 +759,7 @@
 
     function getCategoryByNow(now = moment()) {
       const h = now.hour();
-      if (h >= 5  && h <= 9)  return '2'; // 조식
+      if (h >= 5 && h <= 9) return '2'; // 조식
       if (h >= 10 && h <= 14) return '3'; // 중식
       if (h >= 15 && h <= 19) return '4'; // 석식
       return '5';                          // 야식
@@ -778,10 +781,10 @@
 
     // ===== Reload (SWR: 캐시 즉시 표시 → 백그라운드 갱신) =====
     async function reload({ revalidate = true } = {}) {
-      const date     = document.getElementById('start_date').value || moment().format('YYYY-MM-DD');
-      const site     = formState.searchSite;
+      const date = document.getElementById('start_date').value || moment().format('YYYY-MM-DD');
+      const site = formState.searchSite;
       const category = formState.searchCategory;
-      const lang     = formState.lang;
+      const lang = formState.lang;
 
       const key = cacheKey(date, site, category, lang);
 
@@ -831,132 +834,411 @@
 
 
     // ===== Weekly Menu Modal =====
-    // 카테고리 표시 순서 고정 (조식→중식→석식→야식)
-    const CATEGORY_ORDER = { '조식': 0, 'sáng': 0, '중식': 1, 'trưa': 1, '석식': 2, 'tối': 2, '야식': 3, 'đêm': 3 };
+    // 모달 상태 초기화 함수
+    // ===== Weekly Menu Modal =====
+
+    // 카테고리 표시 순서
+    const CATEGORY_ORDER = {
+      '조식': 0,
+      'sáng': 0,
+      '중식': 1,
+      'trưa': 1,
+      '석식': 2,
+      'tối': 2,
+      '야식': 3,
+      'đêm': 3
+    };
+
     const DOW_KR = ['월', '화', '수', '목', '금', '토', '일'];
     const DOW_VN = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
+
+    // ===== Weekly Modal State =====
+
+    let weeklyModalLoading = false;
+    let weeklyAbortController = null;
+
+
+    // ===== Weekly Table Render =====
+
     function renderWeeklyTable(rows) {
-      const isVn  = formState.lang === 'vn';
+
+      const isVn = formState.lang === 'vn';
+
       const today = moment().format('YYYY-MM-DD');
 
-      const dates      = [...new Set(rows.map(r => r.apply_date))].sort();
-      const catKey     = isVn ? 'category_name_v' : 'category_name_k';
-      const categories = [...new Set(rows.map(r => r[catKey] || ''))].filter(Boolean)
-        .sort((a, b) => (CATEGORY_ORDER[a] ?? 99) - (CATEGORY_ORDER[b] ?? 99));
+      const dates =
+        [...new Set(rows.map(r => r.apply_date))]
+          .sort();
 
-      // (날짜|카테고리) → row 로 O(1) 조회
+      const catKey =
+        isVn
+          ? 'category_name_v'
+          : 'category_name_k';
+
+      const categories =
+        [...new Set(rows.map(r => r[catKey] || ''))]
+          .filter(Boolean)
+          .sort((a, b) =>
+            (CATEGORY_ORDER[a] ?? 99)
+            -
+            (CATEGORY_ORDER[b] ?? 99)
+          );
+
+      // 빠른 조회용 lookup map
       const lookup = new Map();
+
       for (const r of rows) {
-        lookup.set(`${r.apply_date}|${r[catKey]}`, r);
+        lookup.set(
+          `${r.apply_date}|${r[catKey]}`,
+          r
+        );
       }
 
-      const DOW = isVn ? DOW_VN : DOW_KR;
+      const DOW =
+        isVn
+          ? DOW_VN
+          : DOW_KR;
 
-      let html = '<div class="table-responsive"><table class="table table-bordered table-sm weekly-table mb-2">';
+      let html = `
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm weekly-table mb-2">
+  `;
 
-      // 헤더: 날짜별 열
-      html += '<thead><tr><th style="min-width:52px"></th>';
+      // ===== Header =====
+
+      html += `
+    <thead>
+      <tr>
+        <th style="min-width:52px"></th>
+  `;
+
       for (const d of dates) {
-        const dm     = moment(d, 'YYYY-MM-DD');
-        const dow    = DOW[dm.isoWeekday() - 1];
-        const isToday = d === today;
-        html += `<th class="${isToday ? 'today-col' : ''}">${dow}<br><small class="fw-normal">${dm.format('MM/DD')}</small></th>`;
-      }
-      html += '</tr></thead>';
 
-      // 바디: 카테고리별 행
+        const dm =
+          moment(d, 'YYYY-MM-DD');
+
+        const dow =
+          DOW[dm.isoWeekday() - 1];
+
+        const isToday =
+          d === today;
+
+        html += `
+      <th class="${isToday ? 'today-col' : ''}">
+        ${dow}
+        <br>
+        <small class="fw-normal">
+          ${dm.format('MM/DD')}
+        </small>
+      </th>
+    `;
+      }
+
+      html += `
+      </tr>
+    </thead>
+  `;
+
+      // ===== Body =====
+
       html += '<tbody>';
+
       for (const cat of categories) {
-        html += `<tr><td class="cat-cell">${cat}</td>`;
+
+        html += `
+      <tr>
+        <td class="cat-cell">
+          ${cat}
+        </td>
+    `;
+
         for (const d of dates) {
-          const isToday = d === today;
-          const row     = lookup.get(`${d}|${cat}`);
-          html += `<td class="menu-cell${isToday ? ' today-col' : ''}">`;
+
+          const isToday =
+            d === today;
+
+          const row =
+            lookup.get(`${d}|${cat}`);
+
+          html += `
+        <td class="menu-cell${isToday ? ' today-col' : ''}">
+      `;
+
           if (row) {
-            const items = [1, 2, 3, 4, 5, 6, 7]
-              .map(i => isVn ? row[`menu_name_v_${i}`] : row[`menu_name_k_${i}`])
-              .filter(v => v && String(v).trim());
-            html += items.length
-              ? '<ul class="weekly-menu-items">' + items.map(m => `<li>${m}</li>`).join('') + '</ul>'
-              : '<span class="text-muted">-</span>';
+
+            const items =
+              [1, 2, 3, 4, 5, 6, 7]
+                .map(i =>
+                  isVn
+                    ? row[`menu_name_v_${i}`]
+                    : row[`menu_name_k_${i}`]
+                )
+                .filter(v =>
+                  v && String(v).trim()
+                );
+
+            if (items.length) {
+
+              html += `
+            <ul class="weekly-menu-items">
+              ${items.map(m => `<li>${m}</li>`).join('')}
+            </ul>
+          `;
+
+            } else {
+
+              html += `
+            <span class="text-muted">
+              -
+            </span>
+          `;
+            }
+
           } else {
-            html += '<span class="text-muted">-</span>';
+
+            html += `
+          <span class="text-muted">
+            -
+          </span>
+        `;
           }
+
           html += '</td>';
         }
+
         html += '</tr>';
       }
-      html += '</tbody></table></div>';
-      html += `<p class="text-muted small mb-0">${I18N[formState.lang].FOOTER_NOTICE}</p>`;
 
-      document.getElementById('weekly-modal-body').innerHTML = html;
+      html += '</tbody></table></div>';
+
+      html += `
+    <p class="text-muted small mb-0">
+      ${I18N[formState.lang].FOOTER_NOTICE}
+    </p>
+  `;
+
+      document.getElementById(
+        'weekly-modal-body'
+      ).innerHTML = html;
     }
 
-    // 주간 식단 버튼 클릭 → 모달 열기 + 데이터 fetch
-    document.addEventListener('click', function (e) {
-      const btn = e.target.closest('.js-week-download');
-      if (!btn) return;
 
-      const site     = btn.dataset.site;
-      const date     = btn.dataset.date;
-      const siteName = btn.dataset.siteName || '';
 
-      if (!site || !date) {
-        toast('사업장 또는 날짜 정보가 없습니다.');
-        return;
+    // ===== Modal Hidden Cleanup =====
+
+    const weeklyModalEl =
+      document.getElementById(
+        'weeklyMenuModal'
+      );
+
+    weeklyModalEl.addEventListener(
+      'hidden.bs.modal',
+      () => {
+
+        // 로딩 상태 초기화
+        weeklyModalLoading = false;
+
+        // fetch 중단
+        if (weeklyAbortController) {
+
+          weeklyAbortController.abort();
+
+          weeklyAbortController = null;
+        }
+
+        // body 내용 초기화
+        document.getElementById(
+          'weekly-modal-body'
+        ).innerHTML = '';
       }
+    );
 
-      const m    = moment(date, 'YYYY-MM-DD');
-      const year = m.isoWeekYear();
-      const week = String(m.isoWeek()).padStart(2, '0');
 
-      document.getElementById('weeklyMenuModalLabel').textContent =
-        `${siteName} — ${year}년 ${week}주차 식단`;
 
-      // 로딩 스피너 표시 후 모달 오픈
-      document.getElementById('weekly-modal-body').innerHTML =
-        '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted small">불러오는 중...</div></div>';
+    // ===== Weekly Menu Click =====
 
-      const modalEl = document.getElementById('weeklyMenuModal');
-      const modal   = bootstrap.Modal.getOrCreateInstance(modalEl);
-      modalEl.addEventListener('shown.bs.modal', () => {
-        modalEl.querySelector('.btn-close').focus();
-      }, { once: true });
-      modal.show();
+    document.addEventListener(
+      'click',
+      async function (e) {
 
-      const url = `https://pvbi.ddns.net/api/korean_menu/weekly-menu/data/${year}/${site}/${week}?t=${Date.now()}`;
+        const btn =
+          e.target.closest(
+            '.js-week-download'
+          );
 
-      fetch(url, { headers: { 'X-API-KEY': API_KEY } })
-        .then(r => r.json())
-        .then(res => {
-          const rows = normalizeRows(res);
-          if (!rows.length) {
-            document.getElementById('weekly-modal-body').innerHTML =
-              '<div class="text-center py-4 text-muted">등록된 주간 식단이 없습니다.</div>';
+        if (!btn) return;
+
+        // 연타 방지
+        if (weeklyModalLoading) {
+          return;
+        }
+
+        weeklyModalLoading = true;
+
+        try {
+
+          const site =
+            btn.dataset.site;
+
+          const date =
+            btn.dataset.date;
+
+          const siteName =
+            btn.dataset.siteName || '';
+
+          if (!site || !date) {
+
+            toast(
+              '사업장 또는 날짜 정보가 없습니다.'
+            );
+
+            weeklyModalLoading = false;
+
             return;
           }
+
+          const m =
+            moment(date, 'YYYY-MM-DD');
+
+          const year =
+            m.isoWeekYear();
+
+          const week =
+            String(m.isoWeek())
+              .padStart(2, '0');
+
+          // 제목 설정
+          document.getElementById(
+            'weeklyMenuModalLabel'
+          ).textContent =
+            `${siteName} — ${year}년 ${week}주차 식단`;
+
+          // 로딩 UI
+          document.getElementById(
+            'weekly-modal-body'
+          ).innerHTML = `
+        <div class="text-center p-5">
+
+          <div class="spinner-border text-primary"></div>
+
+          <p class="mt-3 text-muted">
+            로딩 중...
+          </p>
+
+        </div>
+      `;
+
+          // Bootstrap modal
+          const modal =
+            bootstrap.Modal.getOrCreateInstance(
+              weeklyModalEl,
+              {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+              }
+            );
+
+          modal.show();
+
+          // 이전 요청 취소
+          if (weeklyAbortController) {
+            weeklyAbortController.abort();
+          }
+
+          weeklyAbortController =
+            new AbortController();
+
+          const url =
+            `https://pvbi.ddns.net/api/korean_menu/weekly-menu/data/${year}/${site}/${week}?t=${Date.now()}`;
+
+          const response =
+            await fetch(url, {
+              method: 'GET',
+              headers: {
+                'X-API-KEY': API_KEY
+              },
+              signal:
+                weeklyAbortController.signal
+            });
+
+          if (!response.ok) {
+            throw new Error(
+              `HTTP ${response.status}`
+            );
+          }
+
+          const json =
+            await response.json();
+
+          const rows =
+            normalizeRows(json);
+
+          // 모달 닫힌 경우 중단
+          if (
+            !weeklyModalEl.classList.contains('show')
+          ) {
+            return;
+          }
+
+          if (!rows.length) {
+
+            document.getElementById(
+              'weekly-modal-body'
+            ).innerHTML = `
+          <div class="text-center p-4 text-muted">
+            등록된 주간 식단이 없습니다.
+          </div>
+        `;
+
+            return;
+          }
+
           renderWeeklyTable(rows);
-        })
-        .catch(() => {
-          document.getElementById('weekly-modal-body').innerHTML =
-            '<div class="text-center py-4 text-danger">데이터를 불러오지 못했습니다.</div>';
-        });
-    });
+
+        } catch (err) {
+
+          // abort는 정상 처리
+          if (
+            err.name === 'AbortError'
+          ) {
+            return;
+          }
+
+          console.error(
+            'Weekly menu error:',
+            err
+          );
+
+          document.getElementById(
+            'weekly-modal-body'
+          ).innerHTML = `
+        <div class="text-center p-4 text-danger">
+          데이터를 불러오지 못했습니다.
+        </div>
+      `;
+
+        } finally {
+
+          weeklyModalLoading = false;
+        }
+      }
+    );
 
 
     // ===== Event Wiring =====
 
     function addDaysToInputDate(deltaDays) {
-      const input   = document.getElementById('start_date');
+      const input = document.getElementById('start_date');
       const current = input.value ? moment(input.value, 'YYYY-MM-DD') : moment();
-      input.value   = current.add(deltaDays, 'days').format('YYYY-MM-DD');
+      input.value = current.add(deltaDays, 'days').format('YYYY-MM-DD');
     }
 
     document.getElementById('bt_date_subtract').addEventListener('click', () => { addDaysToInputDate(-1); reload(); });
-    document.getElementById('bt_date_add').addEventListener('click',      () => { addDaysToInputDate(1);  reload(); });
-    document.getElementById('bt_search').addEventListener('click',        () => reload({ revalidate: true }));
-    document.getElementById('start_date').addEventListener('change',      () => reload({ revalidate: true }));
+    document.getElementById('bt_date_add').addEventListener('click', () => { addDaysToInputDate(1); reload(); });
+    document.getElementById('bt_search').addEventListener('click', () => reload({ revalidate: true }));
+    document.getElementById('start_date').addEventListener('change', () => reload({ revalidate: true }));
 
     document.querySelectorAll('.js-category').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1020,6 +1302,15 @@
         autoSelectCategoryByTime();
         setActiveCategoryButton(formState.searchCategory);
       }, 5 * 60 * 1000);
+
+      // 모달 테스트용 콘솔 명령
+      window.testModal = () => {
+        const modalEl = document.getElementById('weeklyMenuModal');
+        resetModalState();
+        const modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: true });
+        modal.show();
+        document.getElementById('weekly-modal-body').innerHTML = '<div class="p-4">테스트 모달</div>';
+      };
 
       reload({ revalidate: true });
     })();
