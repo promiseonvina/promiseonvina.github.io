@@ -13,11 +13,12 @@
   <link rel="icon" type="image/png" href="assets/favicon/favicon.png">
 
   <meta name="theme-color" content="#ffffff" />
-  <meta name="robots" content="noindex, nofollow"  />
+  <meta name="robots" content="noindex, nofollow" />
 
   <!-- CSS: Bootstrap + Icons -->
   <link rel="stylesheet" href="assets/vendor/bootstrap/dist/css/bootstrap.min.css" />
   <link href="assets/vendor/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="assets/vendor/quikchat/quikchat.min.css" rel="stylesheet" />
 
   <!-- Google Fonts (optional; comment out if you want the fastest possible FCP) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -337,6 +338,82 @@
       background: #DBEAFE;
       color: var(--primary);
     }
+
+    /* ===== 식단 챗봇 (Floating Button + Panel) ===== */
+    .diet-chat-toggle {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+      z-index: 1050;
+      cursor: pointer;
+    }
+
+    .diet-chat-toggle:hover {
+      background: #1D4ED8;
+    }
+
+    .diet-chat-panel {
+      position: fixed;
+      right: 20px;
+      bottom: 88px;
+      width: 360px;
+      max-width: calc(100vw - 32px);
+      height: 500px;
+      max-height: calc(100vh - 120px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, .25);
+      z-index: 1049;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .diet-chat-panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+
+    .diet-chat-panel__close {
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .diet-chat-panel__body {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    @media (max-width: 480px) {
+      .diet-chat-panel {
+        right: 16px;
+        left: 16px;
+        width: auto;
+      }
+    }
   </style>
 
   <!-- Google Analytics GA4 -->
@@ -430,6 +507,7 @@
           </div>
         </div>
 
+
         <!-- Footer -->
         <div class="mt-0 text-center">
           <hr>
@@ -489,8 +567,6 @@
         </div>
       </template>
 
-
-
     </main>
   </div>
 
@@ -507,11 +583,27 @@
     </div>
   </div>
 
+  <!-- ===== 식단 챗봇 (공개 API: /api/korean-menu/chat, KoreanMenuRagService 연동) ===== -->
+  <button id="diet-chat-toggle" class="diet-chat-toggle" type="button" aria-label="Chat" aria-expanded="false">
+    <i class="bi bi-chat-dots-fill"></i>
+  </button>
+
+  <div id="diet-chat-panel" class="diet-chat-panel" style="display: none;">
+    <div class="diet-chat-panel__header">
+      <span id="diet_chat_title"></span>
+      <button id="diet-chat-close" class="diet-chat-panel__close" type="button" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div id="diet-chat-container" class="diet-chat-panel__body"></div>
+  </div>
+
 
   <!-- ===== Vendor Scripts ===== -->
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/moment/min/moment.min.js"></script>
   <script src="assets/vendor/moment/min/locale/ko.min.js"></script>
+  <script src="assets/vendor/quikchat/quikchat.umd.min.js"></script>
 
   <script>
     // ============================================================
@@ -524,7 +616,8 @@
 
 
     // ===== Constants =====
-    const API_BASE = 'https://pvbi.ddns.net/api/korean-menu';
+    //const API_BASE = 'https://pvbi.ddns.net/api/korean-menu';
+    const API_BASE = 'http://localhost/api/korean-menu';
     const API_KEY = 'l0vLjDuIxAAUjHd7';
 
 
@@ -550,7 +643,11 @@
         EMPTY_TITLE: '조회 결과 없음',
         EMPTY_DESC: '선택한 조건에 해당하는 식단이 없습니다.',
         NO_MENU: '등록된 메뉴가 없습니다.',
-        FOOTER_NOTICE: '식자재 수급 상황에 따라서 메뉴는 바뀔 수 있습니다.'
+        FOOTER_NOTICE: '식자재 수급 상황에 따라서 메뉴는 바뀔 수 있습니다.',
+        CHAT_TITLE: '채팅 봇 ',
+        CHAT_PLACEHOLDER: '아무것나 물어보세요',
+        CHAT_SEND: '보내기',
+        CHAT_ERROR: '에러가 발생했습니다.'
       },
       vn: {
         TITLE_MAIN: 'Món chính',
@@ -563,7 +660,11 @@
         EMPTY_TITLE: 'Không có dữ liệu',
         EMPTY_DESC: 'Không có thực đơn cho điều kiện đã chọn.',
         NO_MENU: 'Không có món ăn',
-        FOOTER_NOTICE: 'Thực đơn có thể thay đổi tùy theo tình hình cung ứng nguyên liệu.'
+        FOOTER_NOTICE: 'Thực đơn có thể thay đổi tùy theo tình hình cung ứng nguyên liệu.',
+        CHAT_TITLE: 'Trò chuyện với bot',
+        CHAT_PLACEHOLDER: 'Hãy hỏi bất cứ điều gì',
+        CHAT_SEND: 'Gửi',
+        CHAT_ERROR: 'Đã xảy ra lỗi'
       }
     };
 
@@ -776,7 +877,108 @@
       document.getElementById('footer_notice').textContent = I18N[formState.lang].FOOTER_NOTICE;
 
       updateLogo();
+      if (typeof applyDietChatI18N === 'function') applyDietChatI18N();
     }
+
+
+    // ===== 식단 챗봇 (quikchat + /api/korean-menu/chat) =====
+    let dietChat = null;
+
+    function initDietChat() {
+      if (dietChat || typeof quikchat === 'undefined') return;
+      const container = document.getElementById('diet-chat-container');
+      if (!container) return;
+
+      dietChat = new quikchat(container, onDietChatSend, {
+        trackHistory: true,
+        showTimestamps: true,
+        titleArea: { show: false },
+        messagesArea: { alternating: true }
+      });
+
+      // Enter로 전송, Shift+Enter는 줄바꿈
+      const textbox = container.querySelector('.quikchat-input-textbox');
+      if (textbox) {
+        textbox.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            container.querySelector('.quikchat-input-send-btn').click();
+          }
+        });
+      }
+
+      applyDietChatI18N();
+    }
+
+    async function onDietChatSend(chat, text) {
+      const userLabel = formState.lang === 'vn' ? 'Bạn' : '나';
+      const botLabel = formState.lang === 'vn' ? 'Bot' : '챗봇';
+
+      chat.messageAddNew(text, userLabel, 'right', 'user');
+      const typingId = chat.messageAddTypingIndicator(botLabel, 'left');
+      chat.inputAreaSetEnabled(false);
+
+      try {
+        const res = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': API_KEY
+          },
+          body: JSON.stringify({ message: text, lang: formState.lang })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const answer = (data && (data.answer || data.reply || data.message)) || I18N[formState.lang].CHAT_ERROR;
+        chat.messageReplaceContent(typingId, answer);
+      } catch (_err) {
+        chat.messageReplaceContent(typingId, I18N[formState.lang].CHAT_ERROR);
+      } finally {
+        chat.inputAreaSetEnabled(true);
+      }
+    }
+
+    function applyDietChatI18N() {
+      const titleEl = document.getElementById('diet_chat_title');
+      if (titleEl) titleEl.textContent = I18N[formState.lang].CHAT_TITLE;
+
+      if (!dietChat) return;
+      dietChat.inputAreaSetButtonText(I18N[formState.lang].CHAT_SEND);
+      const textbox = document.querySelector('#diet-chat-container .quikchat-input-textbox');
+      if (textbox) textbox.placeholder = I18N[formState.lang].CHAT_PLACEHOLDER;
+    }
+
+    function openDietChat() {
+      const panel = document.getElementById('diet-chat-panel');
+      const toggleBtn = document.getElementById('diet-chat-toggle');
+      if (!panel || !toggleBtn) return;
+      panel.style.display = 'flex';
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      toggleBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+      if (dietChat) dietChat.scrollToBottom();
+    }
+
+    function closeDietChat() {
+      const panel = document.getElementById('diet-chat-panel');
+      const toggleBtn = document.getElementById('diet-chat-toggle');
+      if (!panel || !toggleBtn) return;
+      panel.style.display = 'none';
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
+    }
+
+    function toggleDietChat() {
+      const panel = document.getElementById('diet-chat-panel');
+      if (!panel) return;
+      if (panel.style.display === 'none' || !panel.style.display) {
+        openDietChat();
+      } else {
+        closeDietChat();
+      }
+    }
+
+    document.getElementById('diet-chat-toggle').addEventListener('click', toggleDietChat);
+    document.getElementById('diet-chat-close').addEventListener('click', closeDietChat);
 
     function setActiveCategoryButton(categoryValue) {
       const buttons = document.querySelectorAll('.js-category');
@@ -1325,6 +1527,7 @@
       const input = document.getElementById('start_date');
       input.value = dateParam ? String(dateParam) : moment().format('YYYY-MM-DD');
 
+      initDietChat();
       applyI18N();
       autoSelectCategoryByTime();
       setActiveCategoryButton(formState.searchCategory);
