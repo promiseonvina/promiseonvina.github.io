@@ -250,11 +250,43 @@
       background: #EFF6FF;
     }
 
-    .lang-flag {
-      height: 22px;
+    /* ===== change 2026-08-04 ===== */
+    /* 언어 버튼 영역 전체가 줄어들거나 다음 줄로 밀리지 않도록 고정 */
+    .lang-switch {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .lang-switch .input-group {
       width: auto;
     }
 
+    /* 화면 크기와 무관하게 버튼이 항상 국기 아이콘 크기에 맞춰지도록 부트스트랩 기본 패딩을 덮어씀 */
+    #btn_lang_kr,
+    #btn_lang_vn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      height: auto;
+      padding: 4px 6px;
+      line-height: 1;
+    }
+
+    .lang-flag {
+      height: 25px;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    #status_text {
+      flex-shrink: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ===== ===== */
     @media (max-width: 480px) {
       .lang-flag {
         height: 20px;
@@ -364,7 +396,7 @@
           </div>
 
           <!-- 언어 전환 버튼 + 상태 텍스트 -->
-          <div class="d-flex align-items-center ms-auto">
+          <div class="d-flex align-items-center ms-auto lang-switch">
             <div class="input-group btn-group-sm flex-nowrap" role="group" aria-label="Language switch">
               <button type="button" class="btn form-control border" id="btn_lang_kr">
                 <img src="assets/vendor/flag-icon-css/flags/4x3/kr.svg" alt="KR" class="lang-flag">
