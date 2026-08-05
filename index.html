@@ -583,8 +583,8 @@
     </div>
   </div>
 
-  <!-- ===== 식단 챗봇 (공개 API: /api/korean-menu/chat, KoreanMenuRagService 연동) ===== -->
-  <button id="diet-chat-toggle" class="diet-chat-toggle" type="button" aria-label="Chat" aria-expanded="false">
+  <!-- ===== 식단 챗봇 (공개 API: /api/korean-menu/chat, KoreanMenuRagService 연동) ===== style="display: none;" -->
+  <button id="diet-chat-toggle" class="diet-chat-toggle" type="button" aria-label="Chat" aria-expanded="false" style="display: none;">
     <i class="bi bi-chat-dots-fill"></i>
   </button>
 
@@ -618,7 +618,7 @@
     // ===== Constants =====
     const API_BASE = 'https://pvbi.ddns.net/api/korean-menu';
     //const API_BASE = 'http://localhost/api/korean-menu';
-    const API_KEY = 'l0vLjDuIxAAUjHd7';
+    const API_KEY = 'l0vLjDuIxAAUjHd7'; // API 인증키 (서버에서 발급받은 키를 사용하세요) 의미 없는 키
 
 
     // ===== App State =====
@@ -644,8 +644,8 @@
         EMPTY_DESC: '선택한 조건에 해당하는 식단이 없습니다.',
         NO_MENU: '등록된 메뉴가 없습니다.',
         FOOTER_NOTICE: '식자재 수급 상황에 따라서 메뉴는 바뀔 수 있습니다.',
-        CHAT_TITLE: '채팅 봇 ',
-        CHAT_PLACEHOLDER: '아무것나 물어보세요',
+        CHAT_TITLE: '메뉴 채팅 봇 ',
+        CHAT_PLACEHOLDER: '메뉴에 대해서 물어보세요',
         CHAT_SEND: '보내기',
         CHAT_ERROR: '에러가 발생했습니다.'
       },
@@ -661,8 +661,8 @@
         EMPTY_DESC: 'Không có thực đơn cho điều kiện đã chọn.',
         NO_MENU: 'Không có món ăn',
         FOOTER_NOTICE: 'Thực đơn có thể thay đổi tùy theo tình hình cung ứng nguyên liệu.',
-        CHAT_TITLE: 'Trò chuyện với bot',
-        CHAT_PLACEHOLDER: 'Hãy hỏi bất cứ điều gì',
+        CHAT_TITLE: 'Trò chuyện với bot thực đơn',
+        CHAT_PLACEHOLDER: 'Hãy hỏi bất cứ điều gì về thực đơn',
         CHAT_SEND: 'Gửi',
         CHAT_ERROR: 'Đã xảy ra lỗi'
       }
@@ -928,10 +928,20 @@
           body: JSON.stringify({ message: text, lang: formState.lang })
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
+
         const data = await res.json();
-        const answer = (data && (data.answer || data.reply || data.message)) || I18N[formState.lang].CHAT_ERROR;
+
+        console.log('Diet Chat Response:', res);
+        console.log('Diet Chat Response:', data);
+        
+        //const answer = (data && (data.answer || data.reply || data.message)) || I18N[formState.lang].CHAT_ERROR;
+        const answer = data.data || I18N[formState.lang].CHAT_ERROR;
+        console.log('Diet Chat Response:', answer);
+
+
         chat.messageReplaceContent(typingId, answer);
       } catch (_err) {
+        console.error('Diet Chat Error:', _err);
         chat.messageReplaceContent(typingId, I18N[formState.lang].CHAT_ERROR);
       } finally {
         chat.inputAreaSetEnabled(true);
