@@ -1542,6 +1542,12 @@
       autoSelectCategoryByTime();
       setActiveCategoryButton(formState.searchCategory);
 
+      // ?chatMode=enable 일 때만 챗봇 버튼 노출 + 채팅창 자동 오픈
+      if (getQueryParam('chatMode') === 'enable') {
+        document.getElementById('diet-chat-toggle').style.display = 'flex';
+        openDietChat();
+      }
+
       // 5분마다 시간 기반 카테고리 재확인 (자정 넘김 대응)
       setInterval(() => {
         autoSelectCategoryByTime();
